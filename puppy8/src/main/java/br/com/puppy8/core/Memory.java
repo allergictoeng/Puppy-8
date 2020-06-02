@@ -1,5 +1,7 @@
 package br.com.puppy8.core;
 
+import java.util.Arrays;
+
 public class Memory {
 	static final int SIZE_4096 = 0x1000;
 	int[] memory;
@@ -19,5 +21,8 @@ public class Memory {
 	public void write(int data, int position) {
 		memory[position] = data;
 	}
-
+	
+	public void printFullMemory() {
+		System.out.print(Arrays.toString(memory));
+	}
 }
