@@ -28,11 +28,8 @@ public class MemoryTest {
 	@Test
 	public void writeInMemory() {
 		memory.write(0x000A,0x0000);
-		
 		assertTrue((memory.read(0x0000) == 0x000A));
 		assertFalse((memory.read(0x0001) == 0x000A));
-		
 	}
-	
 	
 }

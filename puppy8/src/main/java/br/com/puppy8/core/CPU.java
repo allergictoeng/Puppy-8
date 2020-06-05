@@ -5,7 +5,6 @@ import java.util.Arrays;
 public class CPU {
 	
 	static final int REGISTERS_8BIT_SIZE16 = 0x10;
-	static final int STACK_SIZE16 = 0x10;
 	
 	static final int REGISTER_V0  = 0x0 & 0xFF;
 	static final int REGISTER_V1  = 0x1 & 0xFF;
@@ -25,12 +24,11 @@ public class CPU {
 	static final int REGISTER_VF  = 0xf & 0xFF;
 	
 	private Memory memory;
-	private int[] stack = new int[STACK_SIZE16]; 
-	
+	private Stack stack;
 	//the CHIP-8 interpreter itself occupies the first 512 bytes of the memory space on these machines.
 	//For this reason, most programs written for the original system begin at memory location 512 (0x200)
-	protected int programCounter = 0x200;
-	protected int stackPointer = 0;
+	protected int programCounter;
+	protected int stackPointer;
 
 	private int[] registers = new int[]
 	{REGISTER_V0, REGISTER_V1, REGISTER_V2,
@@ -40,11 +38,11 @@ public class CPU {
 	 REGISTER_VC, REGISTER_VD, REGISTER_VE,
 	 REGISTER_VF};
 	
-	public int readRegister(int registerV) {
+	public int readInRegister(int registerV) {
 		return registers[registerV];
 	}
 	
-	public void writeRegister(int registerV, int data) {
+	public void writeInRegister(int registerV, int data) {
 		registers[registerV] = data;
 	}
 	
@@ -55,8 +53,11 @@ public class CPU {
 		memory.printFullMemory();
 	}
 	
-	public CPU(Memory memory) {
+	public CPU(Memory memory, Stack stack) {
+		this.stack = stack;
 		this.memory = memory;
+		this.programCounter = 0x200;
+		this.stackPointer = 0;
 	}
 
 }
