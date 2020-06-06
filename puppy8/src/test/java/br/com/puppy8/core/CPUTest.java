@@ -2,7 +2,7 @@ package br.com.puppy8.core;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Stack;
+import br.com.puppy8.core.Stack;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,11 +11,13 @@ public class CPUTest {
 	
 	private Memory memory;
 	private CPU cpu;
+	private Stack stack;
 	
 	@Before
 	public void create() {
 		memory = new Memory(Memory.SIZE_4096);
-		//cpu = new CPU(memory,new Stack(0x00));
+		stack = new Stack(Stack.STACK_SIZE16);
+		cpu = new CPU(memory,stack);
 	}
 	
 	@Test
@@ -27,7 +29,7 @@ public class CPUTest {
 	@Test
 	public void testJumpsToAddressNNN() {
 		cpu.programCounter = 0;
-		//cpu.decode(cpu.programCounter);
+		cpu.decode(cpu.programCounter);
 	}
 	
 }

@@ -14,12 +14,15 @@ public class Memory {
 		return this.memory.length;
 	}
 
-	public int read(int position) {
-		return memory[position];
+	public int read(int adress) {
+		if(adress < 0 || adress >= SIZE_4096)
+			return 0; 
+		
+		return memory[adress];
 	}
 
-	public void write(int data, int position) {
-		memory[position] = data;
+	public void write(int data, int adress) {
+		memory[adress] = data;
 	}
 	
 	public void printFullMemory() {

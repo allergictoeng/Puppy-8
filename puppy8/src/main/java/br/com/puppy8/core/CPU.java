@@ -29,6 +29,7 @@ public class CPU {
 	//For this reason, most programs written for the original system begin at memory location 512 (0x200)
 	protected int programCounter;
 	protected int stackPointer;
+	protected int opcode;
 
 	private int[] registers = new int[]
 	{REGISTER_V0, REGISTER_V1, REGISTER_V2,
@@ -58,6 +59,116 @@ public class CPU {
 		this.memory = memory;
 		this.programCounter = 0x200;
 		this.stackPointer = 0;
+		this.opcode = 0;
 	}
 
+	public void decode(int opcode) {
+		
+		this.opcode = opcode & 0xF000;
+		
+		switch(this.opcode) { // this operation get a first opcode position
+			
+		case 0x0000:
+		{
+			switch(opcode & 0x00FF) { //this operation get de last opcode position
+				
+				case 0x00E0: 
+					clearScreen();
+					break;
+					
+				case 0x00EE: 
+					returnFromASubroutine();
+					break;
+				
+				default:
+					// wait a decision
+			}
+		}
+		
+		case 0x1000:
+			jumpToAdress();
+			break;
+			
+		case 0x2000:
+			callsSubroutineAt();
+			break;
+			
+		case 0x3000:
+			skipsNextInstrIfVXEqualsNN();
+			break;
+			
+		case 0x4000:
+			skipsNextInstrIfVXDoesnEqualNN();
+			break;
+			
+		case 0x5000:
+			skipsNextInstrIfVXEqualsVY();
+			break;
+			
+		case 0x6000:
+			setsVXToNN();
+			break;
+			
+		case 0x7000:
+			addsNNToVX();
+			break;
+			
+		case 0x8000:
+		case 0x9000:
+		case 0xA000:
+		case 0xB000:
+		case 0xC000:
+		case 0xD000:
+		case 0xE000:
+		case 0xF000:
+		
+		
+		
+		}
+		
+	}
+
+	private void addsNNToVX() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void setsVXToNN() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void skipsNextInstrIfVXEqualsVY() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void skipsNextInstrIfVXDoesnEqualNN() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void skipsNextInstrIfVXEqualsNN() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void callsSubroutineAt() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void jumpToAdress() {
+		programCounter = (this.opcode & 0x0FFF);		
+	}
+
+	private void returnFromASubroutine() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void clearScreen() {
+		// TODO Auto-generated method stub
+		
+	}
 }
