@@ -1,25 +1,10 @@
 package br.com.puppy8.core;
 
+import java.util.Arrays;
+
 public class CPU {
 
 	private static final int REGISTERS_8BIT_SIZE16 = 0x10;
-
-	static final int REGISTER_V0  = 0x0 & 0xFF;
-	static final int REGISTER_V1  = 0x1 & 0xFF;
-	static final int REGISTER_V2  = 0x2 & 0xFF;
-	static final int REGISTER_V3  = 0x3 & 0xFF;
-	static final int REGISTER_V4  = 0x4 & 0xFF;
-	static final int REGISTER_V5  = 0x5 & 0xFF;
-	static final int REGISTER_V6  = 0x6 & 0xFF;
-	static final int REGISTER_V7  = 0x7 & 0xFF;
-	static final int REGISTER_V8  = 0x8 & 0xFF;
-	static final int REGISTER_V9  = 0x9 & 0xFF;
-	static final int REGISTER_VA  = 0xa & 0xFF;
-	static final int REGISTER_VB  = 0xb & 0xFF;
-	static final int REGISTER_VC  = 0xc & 0xFF;
-	static final int REGISTER_VD  = 0xd & 0xFF;
-	static final int REGISTER_VE  = 0xe & 0xFF;
-	static final int REGISTER_VF  = 0xf & 0xFF;
 
 	private static final int OP_00E0 = 0x00E0;
 	private static final int OP_00EE = 0x00EE;
@@ -335,18 +320,25 @@ public class CPU {
 	}
 
 	private void skipsNextInstrIfVXEqualsVY() {
-		// TODO Auto-generated method stub
-
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+		this.programCounter += (registerXResult == registerYResult)? 4 : 2; // Increment by 2 or 4	
 	}
 
 	private void skipsNextInstrIfVXDoesnEqualNN() {
-		// TODO Auto-generated method stub
-
+		int registerPosition = (this.opcode & 0x0F00) >>  8;
+		int registerData = (this.opcode & 0x00FF);
+		int registerResult = readInRegister(registerPosition);
+		this.programCounter += (registerResult != registerData)? 4 : 2; // Increment by 2 or 4
 	}
 
 	private void skipsNextInstrIfVXEqualsNN() {
-		// TODO Auto-generated method stub
-
+		int registerPosition = (this.opcode & 0x0F00) >>  8;
+		int registerData = (this.opcode & 0x00FF);
+		int registerResult = readInRegister(registerPosition);
+		this.programCounter += (registerResult == registerData)? 4 : 2; // Increment by 2 or 4
 	}
 
 	private void callsSubroutineAt() {
