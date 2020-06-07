@@ -71,4 +71,20 @@ public class CPUTest {
 		cpu.decode(0x5010);
 		assertTrue(cpu.getProgramCounter() == 0x206);
 	}
+	
+	@Test
+	public void testSetsVXToNN() {
+		cpu.decode(0x6110);
+		assertTrue(cpu.readInRegister(1) == 0x10);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
+	@Test
+	public void testAddsNNToVX() {
+		cpu.writeInRegister(1, 0x10);
+		cpu.decode(0x7110);
+		assertTrue(cpu.readInRegister(1) == 0x20);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
 }

@@ -310,13 +310,18 @@ public class CPU {
 	}
 
 	private void addsNNToVX() {
-		// TODO Auto-generated method stub
-
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		int registerData = (this.opcode & 0x00FF);
+		int mergedValues = (readInRegister(registerPosition) + registerData) & 0xFF;
+		writeInRegister(registerPosition, mergedValues);
+		programCounter += 2; //Increment by 2
 	}
 
 	private void setsVXToNN() {
-		// TODO Auto-generated method stub
-
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		int registerData = (this.opcode & 0x00FF);
+		writeInRegister(registerPosition, registerData);
+		programCounter += 2; //Increment by 2
 	}
 
 	private void skipsNextInstrIfVXEqualsVY() {
