@@ -64,14 +64,17 @@ public class CPU {
 	private Stack stack;
 	private int programCounter;
 
+	protected int stackPointer;
+	private int opcode;
+	private int[] registers;
+
 	public int getProgramCounter() {
 		return programCounter;
 	}
-
-	protected int stackPointer;
-	protected int opcode;
-
-	private int[] registers;
+	
+	public Stack getStack() {
+		return stack;
+	}
 
 	public int readInRegister(int registerV) {
 		return registers[registerV];
@@ -85,11 +88,11 @@ public class CPU {
 		memory.printFullMemory();
 	}
 
-	public CPU(Memory memory, Stack stack) {
-		this.stack = stack;
+	public CPU(Memory memory) {
 		this.memory = memory;
 		this.programCounter = 0x200;
 		this.stackPointer = 0;
+		this.stack = new Stack(Stack.STACK_SIZE16);
 		this.registers = new int[REGISTERS_8BIT_SIZE16];
 	}
 
@@ -347,8 +350,8 @@ public class CPU {
 	}
 
 	private void callsSubroutineAt() {
-		// TODO Auto-generated method stub
-
+		this.stack.push(this.programCounter);
+		this.programCounter = this.opcode & 0x0FFF;
 	}
 
 	private void jumpToAdress() {
