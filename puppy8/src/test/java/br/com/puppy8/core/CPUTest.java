@@ -28,8 +28,8 @@ public class CPUTest {
 	
 	@Test
 	public void testJumpsToAddressNNN() {
-		cpu.programCounter = 0;
-		cpu.decode(cpu.programCounter);
+		cpu.decode(0x1EEE);
+		assertTrue(cpu.getProgramCounter() == 0x0EEE);		
 	}
 	
 }

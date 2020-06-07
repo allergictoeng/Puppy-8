@@ -1,10 +1,8 @@
 package br.com.puppy8.core;
 
-import java.util.Arrays;
-
 public class CPU {
 
-	static final int REGISTERS_8BIT_SIZE16 = 0x10;
+	private static final int REGISTERS_8BIT_SIZE16 = 0x10;
 
 	static final int REGISTER_V0  = 0x0 & 0xFF;
 	static final int REGISTER_V1  = 0x1 & 0xFF;
@@ -61,23 +59,19 @@ public class CPU {
 	private static final int OP_FX33 = 0x0033;
 	private static final int OP_FX55 = 0x0055;
 	private static final int OP_FX65 = 0x0065;
-
 	
 	private Memory memory;
 	private Stack stack;
-	//the CHIP-8 interpreter itself occupies the first 512 bytes of the memory space on these machines.
-	//For this reason, most programs written for the original system begin at memory location 512 (0x200)
-	protected int programCounter;
+	private int programCounter;
+
+	public int getProgramCounter() {
+		return programCounter;
+	}
+
 	protected int stackPointer;
 	protected int opcode;
 
-	private int[] registers = new int[]
-			{REGISTER_V0, REGISTER_V1, REGISTER_V2,
-					REGISTER_V3, REGISTER_V4, REGISTER_V5,
-					REGISTER_V6, REGISTER_V7, REGISTER_V8,
-					REGISTER_V9, REGISTER_VA, REGISTER_VB,
-					REGISTER_VC, REGISTER_VD, REGISTER_VE,
-					REGISTER_VF};
+	private int[] registers;
 
 	public int readInRegister(int registerV) {
 		return registers[registerV];
@@ -86,10 +80,7 @@ public class CPU {
 	public void writeInRegister(int registerV, int data) {
 		registers[registerV] = data;
 	}
-
-	public void printRegisters() {
-		System.out.println(Arrays.toString(registers)); 
-	}
+	
 	public void printFullMemory() {
 		memory.printFullMemory();
 	}
@@ -99,111 +90,110 @@ public class CPU {
 		this.memory = memory;
 		this.programCounter = 0x200;
 		this.stackPointer = 0;
-		this.opcode = 0;
+		this.registers = new int[REGISTERS_8BIT_SIZE16];
 	}
 
 	public void decode(int opcode) {
 
-		this.opcode = opcode & 0xF000;
+		this.opcode = opcode;
 
-		switch(this.opcode) { 
+		switch(this.opcode & 0xF000) { 
 
-		case 0x0000:
-		{
-			switch(opcode & 0x00FF) {
+		case 0x0000:{
+
+			switch(this.opcode & 0x00FF) {
 
 			case OP_00E0: clearScreen();	break;
-			
+
 			case OP_00EE: returnFromASubroutine(); break;
-			
+
 			}
 		}
-		
+
 		case OP_1NNN: jumpToAdress(); break;
-		
+
 		case OP_2NNN: callsSubroutineAt(); break;
-		
+
 		case OP_3XNN: skipsNextInstrIfVXEqualsNN(); break;
-		
+
 		case OP_4XNN: skipsNextInstrIfVXDoesnEqualNN(); break;
-		
+
 		case OP_5XY0: skipsNextInstrIfVXEqualsVY(); break;
-		
+
 		case OP_6XNN: setsVXToNN(); break;
-		
+
 		case OP_7XNN: addsNNToVX(); break;
 
-		case 0x8000:
-		{
-			switch(opcode & 0x000F) {
-			
+		case 0x8000:{
+
+			switch(this.opcode & 0x000F) {
+
 			case OP_8XY0: setsVXToTheValueOfVY(); break;
-			
+
 			case OP_8XY1: bitwiseOR(); break;
-			
+
 			case OP_8XY2: bitwiseAND(); break;
-			
+
 			case OP_8XY3: bitwiseXOR(); break;
-			
+
 			case OP_8XY4: addsVYToVX(); break;
-			
+
 			case OP_8XY5: subtracVYFromVX(); break;
-			
+
 			case OP_8XY6: shiftsVXToTheRightBy1(); break;
-			
+
 			case OP_8XY7: setsVXToVYMinusVX(); break;
-			
+
 			case OP_8XYE: shiftsVXtoTheLeftBy1(); break;
 
 			}
 		}
-		
+
 		case OP_9XY0: skipsNextInstructionIfVXdoesnEqualVY(); break;
-		
+
 		case OP_ANNN: setsItoAddressNNN(); break;
-		
+
 		case OP_BNNN: jumpsAddressNNNPlusV0(); break;
-		
+
 		case OP_CXNN: setsVXResultOfABitwiseAndOperationOnARandomNumber(); break;
-		
+
 		case OP_DXYN: drawsASprite(); break;
 
-		case 0xE000:
-		{
-			switch(opcode & 0x00FF) {
-			
+		case 0xE000:{
+
+			switch(this.opcode & 0x00FF) {
+
 			case OP_EX9E: skipsTheNextInstructionIfTheKeyStoredInVXIsPressed(); break;
-			
+
 			case OP_EXA1: skipsTheNextInstructionIfTheKeyStoredInVXisnPressed(); break;
 
 			}
 		}
-		case 0xF000:
-		{
-			switch(opcode & 0x00FF) {
-			
+		case 0xF000:{
+
+			switch(this.opcode & 0x00FF) {
+
 			case OP_FX07: setsVXToTheValueOfTheDelayTimer(); break;
-			
+
 			case OP_FX0A: keyPressIsAwaitedAndThenStoredInVX(); break;
-			
+
 			case OP_FX15: setsTheDelayTimerToVX(); break;
-			
+
 			case OP_FX18: setsTheSoundTimerToVX(); break;
-			
+
 			case OP_FX1E: addsVXToI(); break;
-			
+
 			case OP_FX29: setsIToTheLocationOfTheSpriteForTheCharacterInVX(); break;
-			
+
 			case OP_FX33: storesTheBinaryCodedDecimalRepresentationOfVX(); break;
-			
+
 			case OP_FX55: storesV0ToVXInMemoryStartingAtAddressI(); break;
-			
+
 			case OP_FX65: fillsV0ToVXWithValuesFromMemoryStartingAtAddressI(); break;
-			
+
 			}	
 		}
 		}
-
 	}
 
 	private void fillsV0ToVXWithValuesFromMemoryStartingAtAddressI() {
@@ -362,7 +352,7 @@ public class CPU {
 	}
 
 	private void jumpToAdress() {
-		programCounter = (this.opcode & 0x0FFF);		
+		this.programCounter = this.opcode & 0x0FFF;
 	}
 
 	private void returnFromASubroutine() {
