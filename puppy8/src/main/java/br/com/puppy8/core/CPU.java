@@ -277,7 +277,7 @@ public class CPU {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		
-		programCounter += 2; //Increment by 2
+		programCounter += 2; 
 	}
 
 	private void shiftsVXToTheRightBy1() {
@@ -289,14 +289,24 @@ public class CPU {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		
-		programCounter += 2; //Increment by 2
+		programCounter += 2; 
 	}
 
 	private void addsVYToVX() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+		int result = registerXResult + registerYResult;
 		
-		programCounter += 2; //Increment by 2
+		if(result > 0xF)
+			writeInRegister(0xF, 1);
+		else
+			writeInRegister(0xF, 0);
+		
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);		
+		programCounter += 2;
 	}
 
 	private void bitwiseXOR() {

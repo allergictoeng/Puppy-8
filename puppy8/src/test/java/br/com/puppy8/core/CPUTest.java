@@ -122,4 +122,23 @@ public class CPUTest {
 		assertTrue(cpu.getProgramCounter() == 0x202);
 	}
 	
+	@Test
+	public void testAddsVYToVXWithCarry() {
+		cpu.writeInRegister(1, 0x10);
+		cpu.writeInRegister(2, 0x11);
+		cpu.decode(0x8124);
+		assertTrue(cpu.readInRegister(0xF) == 0x1);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+		
+	}
+	
+	@Test
+	public void testAddsVYToVXWithoutCarry() {
+		cpu.writeInRegister(1, 0x5);
+		cpu.writeInRegister(2, 0x7);
+		cpu.decode(0x8124);
+		assertTrue(cpu.readInRegister(0xF) == 0x0);
+		assertTrue(cpu.getProgramCounter() == 0x202);		
+	}
+	
 }
