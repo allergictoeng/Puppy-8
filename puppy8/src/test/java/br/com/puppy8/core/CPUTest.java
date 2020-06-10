@@ -87,4 +87,39 @@ public class CPUTest {
 		assertTrue(cpu.getProgramCounter() == 0x202);
 	}
 	
+	@Test
+	public void testSetsVXToTheValueOfVY() {
+		cpu.writeInRegister(2, 0x10);
+		cpu.decode(0x8120);
+		assertTrue(cpu.readInRegister(1) == 0x10);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
+	@Test
+	public void testBitwiseOR() {
+		cpu.writeInRegister(1, 0x10);
+		cpu.writeInRegister(2, 0x11);
+		cpu.decode(0x8121);
+		assertTrue(cpu.readInRegister(1) == 0x11);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
+	@Test
+	public void testBitwiseAND() {
+		cpu.writeInRegister(1, 0x10);
+		cpu.writeInRegister(2, 0x11);
+		cpu.decode(0x8122);
+		assertTrue(cpu.readInRegister(1) == 0x10);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
+	@Test
+	public void testBitwiseXOR() {
+		cpu.writeInRegister(1, 0x10);
+		cpu.writeInRegister(2, 0x11);
+		cpu.decode(0x8123);
+		assertTrue(cpu.readInRegister(1) == 0x1);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
 }

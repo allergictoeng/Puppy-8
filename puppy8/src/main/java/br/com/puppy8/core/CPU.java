@@ -49,7 +49,7 @@ public class CPU {
 	private Stack stack;
 	private int programCounter;
 
-	protected int stackPointer;
+	private int stackPointer;
 	private int opcode;
 	private int[] registers;
 
@@ -67,6 +67,10 @@ public class CPU {
 
 	public void writeInRegister(int registerV, int data) {
 		registers[registerV] = data;
+	}
+	
+	public void printRegisters() {
+		System.out.println(Arrays.toString(registers));
 	}
 	
 	public void printFullMemory() {
@@ -270,8 +274,10 @@ public class CPU {
 	}
 
 	private void setsVXToVYMinusVX() {
-		// TODO Auto-generated method stub
-
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		
+		programCounter += 2; //Increment by 2
 	}
 
 	private void shiftsVXToTheRightBy1() {
@@ -280,33 +286,46 @@ public class CPU {
 	}
 
 	private void subtracVYFromVX() {
-		// TODO Auto-generated method stub
-
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		
+		programCounter += 2; //Increment by 2
 	}
 
 	private void addsVYToVX() {
-		// TODO Auto-generated method stub
-
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		
+		programCounter += 2; //Increment by 2
 	}
 
 	private void bitwiseXOR() {
-		// TODO Auto-generated method stub
-
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		registers[registerXPosition] ^= registers[registerYPosition];
+		programCounter += 2; 
 	}
 
 	private void bitwiseAND() {
-		// TODO Auto-generated method stub
-
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		registers[registerXPosition] &= registers[registerYPosition];
+		programCounter += 2; 
 	}
 
 	private void bitwiseOR() {
-		// TODO Auto-generated method stub
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		registers[registerXPosition] |= registers[registerYPosition];
+		programCounter += 2; 
 
 	}
-
+	
 	private void setsVXToTheValueOfVY() {
-		// TODO Auto-generated method stub
-
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		writeInRegister(registerXPosition, readInRegister(registerYPosition));
+		programCounter += 2; 
 	}
 
 	private void addsNNToVX() {
@@ -314,14 +333,14 @@ public class CPU {
 		int registerData = (this.opcode & 0x00FF);
 		int mergedValues = (readInRegister(registerPosition) + registerData) & 0xFF;
 		writeInRegister(registerPosition, mergedValues);
-		programCounter += 2; //Increment by 2
+		programCounter += 2; 
 	}
 
 	private void setsVXToNN() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
 		int registerData = (this.opcode & 0x00FF);
 		writeInRegister(registerPosition, registerData);
-		programCounter += 2; //Increment by 2
+		programCounter += 2; 
 	}
 
 	private void skipsNextInstrIfVXEqualsVY() {
