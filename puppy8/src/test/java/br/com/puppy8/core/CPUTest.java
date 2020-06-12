@@ -129,8 +129,7 @@ public class CPUTest {
 		cpu.decode(0x8124);
 		assertTrue(cpu.readInRegister(0x1) == 0x21);
 		assertTrue(cpu.readInRegister(0xF) == 0x1);
-		assertTrue(cpu.getProgramCounter() == 0x202);
-		
+		assertTrue(cpu.getProgramCounter() == 0x202);		
 	}
 	
 	@Test

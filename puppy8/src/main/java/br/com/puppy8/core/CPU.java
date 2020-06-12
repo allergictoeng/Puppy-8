@@ -271,6 +271,7 @@ public class CPU {
 	private void shiftsVXtoTheLeftBy1() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerXResult = readInRegister(registerXPosition);
+		
 		int result = (registerXResult << 1);
 		
 		if((registerXResult & 0x000F) == 1)
@@ -284,10 +285,10 @@ public class CPU {
 
 	}
 
-
 	private void shiftsVXToTheRightBy1() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerXResult = readInRegister(registerXPosition);
+		
 		int result = (registerXResult >> 1);
 		
 		if((registerXResult & 0x000F) == 1)
@@ -305,6 +306,7 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
+		
 		int result = (registerYResult - registerXResult);
 		
 		if(registerYResult > registerXResult)
@@ -322,6 +324,7 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
+		
 		int result = (registerXResult - registerYResult);
 		
 		if(registerXResult > registerYResult)
@@ -339,6 +342,7 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
+		
 		int result = (registerXResult + registerYResult);
 		
 		if(result > 0xF)
@@ -354,23 +358,39 @@ public class CPU {
 	private void bitwiseXOR() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
-		registers[registerXPosition] ^= registers[registerYPosition];
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+		
+		int result = (registerXResult ^= registerYResult);
+		
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);
 		programCounter += 2; 
 	}
 
 	private void bitwiseAND() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
-		registers[registerXPosition] &= registers[registerYPosition];
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+		
+		int result = (registerXResult &= registerYResult);
+		
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);
 		programCounter += 2; 
 	}
 
 	private void bitwiseOR() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
-		registers[registerXPosition] |= registers[registerYPosition];
-		programCounter += 2; 
-
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+		int result = (registerXResult |= registerYResult);
+		
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);
+		programCounter += 2;
 	}
 	
 	private void setsVXToTheValueOfVY() {
