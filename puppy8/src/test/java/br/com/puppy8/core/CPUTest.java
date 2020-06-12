@@ -127,6 +127,7 @@ public class CPUTest {
 		cpu.writeInRegister(1, 0x10);
 		cpu.writeInRegister(2, 0x11);
 		cpu.decode(0x8124);
+		assertTrue(cpu.readInRegister(0x1) == 0x21);
 		assertTrue(cpu.readInRegister(0xF) == 0x1);
 		assertTrue(cpu.getProgramCounter() == 0x202);
 		
@@ -137,8 +138,28 @@ public class CPUTest {
 		cpu.writeInRegister(1, 0x5);
 		cpu.writeInRegister(2, 0x7);
 		cpu.decode(0x8124);
+		assertTrue(cpu.readInRegister(0x1) == 0xC);
 		assertTrue(cpu.readInRegister(0xF) == 0x0);
 		assertTrue(cpu.getProgramCounter() == 0x202);		
 	}
 	
+	@Test
+	public void testSubtracVYFromVXTheresABorrow() {
+		cpu.writeInRegister(1, 0x5);
+		cpu.writeInRegister(2, 0xA);
+		cpu.decode(0x8125);
+		assertTrue(cpu.readInRegister(0x1) == 0xFB);
+		assertTrue(cpu.readInRegister(0xF) == 0x0);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
+	@Test
+	public void testSubtracVYFromVXIsntABorrow() {
+		cpu.writeInRegister(1, 0xA);
+		cpu.writeInRegister(2, 0x5);
+		cpu.decode(0x8125);
+		assertTrue(cpu.readInRegister(0x1) == 0x5);
+		assertTrue(cpu.readInRegister(0xF) == 0x1);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
 }

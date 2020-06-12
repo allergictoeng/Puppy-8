@@ -288,7 +288,17 @@ public class CPU {
 	private void subtracVYFromVX() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+		int result = (registerXResult - registerYResult);
 		
+		if(registerXResult > registerYResult)
+			writeInRegister(0xF, 1);
+		else
+			writeInRegister(0xF, 0);
+		
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);		
 		programCounter += 2; 
 	}
 
@@ -297,7 +307,7 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
-		int result = registerXResult + registerYResult;
+		int result = (registerXResult + registerYResult);
 		
 		if(result > 0xF)
 			writeInRegister(0xF, 1);
