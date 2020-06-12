@@ -162,4 +162,42 @@ public class CPUTest {
 		assertTrue(cpu.readInRegister(0xF) == 0x1);
 		assertTrue(cpu.getProgramCounter() == 0x202);
 	}
+
+	@Test
+	public void testShiftsVXToTheRightBy1() {
+		cpu.writeInRegister(1, 0x17);
+		cpu.decode(0x8106);
+		assertTrue(cpu.readInRegister(0x1) == 0xB);
+		assertTrue(cpu.readInRegister(0xF) == 0x0);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
+	@Test
+	public void testSetsVXToVYMinusVXTheresABorrow(){
+		cpu.writeInRegister(1, 0x5);
+		cpu.writeInRegister(2, 0xF);
+		cpu.decode(0x8127);
+		assertTrue(cpu.readInRegister(0x1) == 0xA);
+		assertTrue(cpu.readInRegister(0xF) == 0x1);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
+	@Test
+	public void testSetsVXToVYMinusVXIsntABorrow(){
+		cpu.writeInRegister(1, 0xF);
+		cpu.writeInRegister(2, 0xA);
+		cpu.decode(0x8127);
+		assertTrue(cpu.readInRegister(0x1) == 0xFB);
+		assertTrue(cpu.readInRegister(0xF) == 0x0);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+
+	@Test
+	public void testShiftsVXtoTheLeftBy1() {
+		cpu.writeInRegister(1, 0x17);
+		cpu.decode(0x810E);
+		assertTrue(cpu.readInRegister(0x1) == 0x2E);
+		assertTrue(cpu.readInRegister(0xF) == 0x0);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
 }

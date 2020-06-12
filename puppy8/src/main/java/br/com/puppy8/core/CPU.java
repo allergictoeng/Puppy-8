@@ -269,20 +269,52 @@ public class CPU {
 	}
 
 	private void shiftsVXtoTheLeftBy1() {
-		// TODO Auto-generated method stub
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerXResult = readInRegister(registerXPosition);
+		int result = (registerXResult << 1);
+		
+		if((registerXResult & 0x000F) == 1)
+			writeInRegister(0xF, 1);
+		else
+			writeInRegister(0xF, 0);
+		
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);
+		programCounter += 2;
 
+	}
+
+
+	private void shiftsVXToTheRightBy1() {
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerXResult = readInRegister(registerXPosition);
+		int result = (registerXResult >> 1);
+		
+		if((registerXResult & 0x000F) == 1)
+			writeInRegister(0xF, 1);
+		else
+			writeInRegister(0xF, 0);
+		
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);
+		programCounter += 2; 		
 	}
 
 	private void setsVXToVYMinusVX() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+		int result = (registerYResult - registerXResult);
 		
+		if(registerYResult > registerXResult)
+			writeInRegister(0xF, 1);
+		else
+			writeInRegister(0xF, 0);
+		
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);
 		programCounter += 2; 
-	}
-
-	private void shiftsVXToTheRightBy1() {
-		// TODO Auto-generated method stub
-
 	}
 
 	private void subtracVYFromVX() {
@@ -351,8 +383,8 @@ public class CPU {
 	private void addsNNToVX() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
 		int registerData = (this.opcode & 0x00FF);
-		int mergedValues = (readInRegister(registerPosition) + registerData) & 0xFF;
-		writeInRegister(registerPosition, mergedValues);
+		int result = (readInRegister(registerPosition) + registerData) & 0xFF;
+		writeInRegister(registerPosition, result);
 		programCounter += 2; 
 	}
 
