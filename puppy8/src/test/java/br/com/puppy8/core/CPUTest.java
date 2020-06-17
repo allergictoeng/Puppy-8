@@ -199,4 +199,12 @@ public class CPUTest {
 		assertTrue(cpu.readInRegister(0xF) == 0x0);
 		assertTrue(cpu.getProgramCounter() == 0x202);
 	}
+	
+	@Test 
+	public void testSkipsNextInstructionIfVXdoesnEqualVY() {
+		cpu.writeInRegister(1, 0x10);
+		cpu.writeInRegister(2, 0x11);
+		cpu.decode(0x9120);
+		assertTrue(cpu.getProgramCounter() == 0x204);
+	}
 }

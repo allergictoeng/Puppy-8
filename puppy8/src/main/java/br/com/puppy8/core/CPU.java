@@ -73,6 +73,10 @@ public class CPU {
 		System.out.println(Arrays.toString(registers));
 	}
 	
+	public void printPC() {
+		System.out.println("pc: "+this.programCounter);
+	}
+	
 	public void printFullMemory() {
 		memory.printFullMemory();
 	}
@@ -99,7 +103,7 @@ public class CPU {
 
 			case OP_00EE: returnFromASubroutine(); break;
 
-			}
+			} break;
 		}
 
 		case OP_1NNN: jumpToAdress(); break;
@@ -138,7 +142,7 @@ public class CPU {
 
 			case OP_8XYE: shiftsVXtoTheLeftBy1(); break;
 
-			}
+			} break;
 		}
 
 		case OP_9XY0: skipsNextInstructionIfVXdoesnEqualVY(); break;
@@ -159,7 +163,7 @@ public class CPU {
 
 			case OP_EXA1: skipsTheNextInstructionIfTheKeyStoredInVXisnPressed(); break;
 
-			}
+			} break;
 		}
 		case 0xF000:{
 
@@ -264,8 +268,11 @@ public class CPU {
 	}
 
 	private void skipsNextInstructionIfVXdoesnEqualVY() {
-		// TODO Auto-generated method stub
-
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+		this.programCounter += (registerXResult != registerYResult)? 4 : 2;	
 	}
 
 	private void shiftsVXtoTheLeftBy1() {
@@ -282,7 +289,6 @@ public class CPU {
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
 		programCounter += 2;
-
 	}
 
 	private void shiftsVXToTheRightBy1() {
