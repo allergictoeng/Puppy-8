@@ -223,4 +223,11 @@ public class CPUTest {
 		assertTrue(cpu.getProgramCounter() == 0x120);
 	}
 	
+	@Test
+	public void testSetsVXResultOfABitwiseAndOperationOnARandomNumber() {
+		cpu.decode(0xC111);
+		int register = cpu.readInRegister(0x1);
+		assertTrue((register >= 0x000) && (register <= 0x100));
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
 }

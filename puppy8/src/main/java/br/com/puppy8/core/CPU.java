@@ -1,6 +1,7 @@
 package br.com.puppy8.core;
 
 import java.util.Arrays;
+import java.util.Random;
 
 public class CPU {
 
@@ -262,11 +263,14 @@ public class CPU {
 
 	}
 
-
-
 	private void setsVXResultOfABitwiseAndOperationOnARandomNumber() {
-		// TODO Auto-generated method stub
-
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		int registerData = (this.opcode & 0x00FF);
+		
+		int result = (registerData & new Random().nextInt(0x100));
+		
+		writeInRegister(registerPosition, result);
+		this.programCounter += 2;
 	}
 
 	private void jumpsAddressNNNPlusV0() {
