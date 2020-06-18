@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MemoryTest {
+public class TestMemory {
 	
 	private Memory memory;
 	

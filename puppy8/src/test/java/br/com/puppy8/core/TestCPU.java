@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CPUTest {
+public class TestCPU {
 	
 	private Memory memory;
 	private CPU cpu;	
@@ -229,5 +229,10 @@ public class CPUTest {
 		int register = cpu.readInRegister(0x1);
 		assertTrue((register >= 0x000) && (register <= 0x100));
 		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
+	@Test
+	public void testSetsVXToTheValueOfTheDelayTimer() {
+		// Start here!
 	}
 }

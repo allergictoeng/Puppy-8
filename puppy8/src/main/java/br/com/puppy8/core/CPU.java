@@ -2,11 +2,15 @@ package br.com.puppy8.core;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CPU {
 
 	private static final int REGISTERS_8BIT_SIZE16 = 0x10;
 
+    private static final long MS_DELAY_INTERVAL = 17;
+	
 	private static final int OP_00E0 = 0x00E0;
 	private static final int OP_00EE = 0x00EE;
 	private static final int OP_1NNN = 0x1000;
@@ -50,10 +54,11 @@ public class CPU {
 	private Stack stack;
 	private int programCounter;
 
-	private int stackPointer;
 	private int opcode;
 	private int[] registers;
 	private int index;
+	private int sound;
+	private int delay;
 
 	public int getProgramCounter() {
 		return programCounter;
@@ -94,12 +99,39 @@ public class CPU {
 	public CPU(Memory memory) {
 		this.memory = memory;
 		this.programCounter = 0x200;
-		this.stackPointer = 0;
 		this.stack = new Stack(Stack.STACK_SIZE16);
 		this.registers = new int[REGISTERS_8BIT_SIZE16];
 		this.index = 0;
+		this.delay = 0;
+		this.sound = 0;
+		timers();
+	}
+	
+	private void timers() {
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				decrementTimers();
+			}
+		}, MS_DELAY_INTERVAL, MS_DELAY_INTERVAL);
 	}
 
+	private void decrementTimers() {
+		if (delay != 0) {
+			delay--;
+		}
+
+		if (sound != 0) {
+			sound--;
+			//play io here
+		}
+
+		if (sound == 0) {
+			//stop io here
+		}
+	}
+	
 	public void decode(int opcode) {
 
 		this.opcode = opcode;
@@ -198,9 +230,9 @@ public class CPU {
 
 			case OP_FX65: fillsV0ToVXWithValuesFromMemoryStartingAtAddressI(); break;
 
-			}	
+			} break;
 		}
-		}
+	  }
 	}
 
 	private void fillsV0ToVXWithValuesFromMemoryStartingAtAddressI() {
@@ -244,23 +276,10 @@ public class CPU {
 	}
 
 	private void setsVXToTheValueOfTheDelayTimer() {
-		// TODO Auto-generated method stub
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
 		
-	}
-
-	private void skipsTheNextInstructionIfTheKeyStoredInVXisnPressed() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void skipsTheNextInstructionIfTheKeyStoredInVXIsPressed() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void drawsASprite() {
-		// TODO Auto-generated method stub
-
+		writeInRegister(registerPosition, this.delay);
+		this.programCounter += 2;
 	}
 
 	private void setsVXResultOfABitwiseAndOperationOnARandomNumber() {
@@ -466,7 +485,22 @@ public class CPU {
 	private void jumpToAdress() {
 		this.programCounter = this.opcode & 0x0FFF;
 	}
+	
+	private void skipsTheNextInstructionIfTheKeyStoredInVXisnPressed() {
+		// TODO Auto-generated method stub
 
+	}
+
+	private void skipsTheNextInstructionIfTheKeyStoredInVXIsPressed() {
+		// TODO Auto-generated method stub
+
+	}
+	
+	private void drawsASprite() {
+		// TODO Auto-generated method stub
+
+	}
+	
 	private void returnFromASubroutine() {
 		// TODO Auto-generated method stub
 
@@ -476,4 +510,5 @@ public class CPU {
 		// TODO Auto-generated method stub
 
 	}
+
 }
