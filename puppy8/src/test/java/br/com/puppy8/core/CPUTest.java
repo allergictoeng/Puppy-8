@@ -207,4 +207,20 @@ public class CPUTest {
 		cpu.decode(0x9120);
 		assertTrue(cpu.getProgramCounter() == 0x204);
 	}
+	
+	@Test
+	public void testSetsItoAddressNNN() {
+		cpu.decode(0xAFF0);
+		assertTrue(cpu.getIndex() == 0xFF0);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
+	@Test
+	public void testJumpsAddressNNNPlusV0() {
+		cpu.decode(0xA010);
+		cpu.decode(0xB110);
+		assertTrue(cpu.getIndex() == 0x010);
+		assertTrue(cpu.getProgramCounter() == 0x120);
+	}
+	
 }

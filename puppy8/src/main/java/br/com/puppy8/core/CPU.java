@@ -52,6 +52,7 @@ public class CPU {
 	private int stackPointer;
 	private int opcode;
 	private int[] registers;
+	private int index;
 
 	public int getProgramCounter() {
 		return programCounter;
@@ -77,6 +78,14 @@ public class CPU {
 		System.out.println("pc: "+this.programCounter);
 	}
 	
+	public void printIndex() {
+		System.out.println("Index: "+this.index);
+	}
+	
+	public int getIndex() {
+		return this.index;
+	}
+	
 	public void printFullMemory() {
 		memory.printFullMemory();
 	}
@@ -87,6 +96,7 @@ public class CPU {
 		this.stackPointer = 0;
 		this.stack = new Stack(Stack.STACK_SIZE16);
 		this.registers = new int[REGISTERS_8BIT_SIZE16];
+		this.index = 0;
 	}
 
 	public void decode(int opcode) {
@@ -252,19 +262,20 @@ public class CPU {
 
 	}
 
-	private void setsItoAddressNNN() {
+
+
+	private void setsVXResultOfABitwiseAndOperationOnARandomNumber() {
 		// TODO Auto-generated method stub
 
 	}
 
 	private void jumpsAddressNNNPlusV0() {
-		// TODO Auto-generated method stub
-
+		this.programCounter = this.index + (this.opcode & 0x0FFF);		
 	}
 
-	private void setsVXResultOfABitwiseAndOperationOnARandomNumber() {
-		// TODO Auto-generated method stub
-
+	private void setsItoAddressNNN() {
+		this.index = (this.opcode & 0x0FFF);
+		this.programCounter += 2;
 	}
 
 	private void skipsNextInstructionIfVXdoesnEqualVY() {
@@ -288,7 +299,7 @@ public class CPU {
 		
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
-		programCounter += 2;
+		this.programCounter += 2;
 	}
 
 	private void shiftsVXToTheRightBy1() {
@@ -304,7 +315,7 @@ public class CPU {
 		
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
-		programCounter += 2; 		
+		this.programCounter += 2; 		
 	}
 
 	private void setsVXToVYMinusVX() {
@@ -322,7 +333,7 @@ public class CPU {
 		
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
-		programCounter += 2; 
+		this.programCounter += 2; 
 	}
 
 	private void subtracVYFromVX() {
@@ -340,7 +351,7 @@ public class CPU {
 		
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);		
-		programCounter += 2; 
+		this.programCounter += 2; 
 	}
 
 	private void addsVYToVX() {
@@ -358,7 +369,7 @@ public class CPU {
 		
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);		
-		programCounter += 2;
+		this.programCounter += 2;
 	}
 
 	private void bitwiseXOR() {
@@ -371,7 +382,7 @@ public class CPU {
 		
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
-		programCounter += 2; 
+		this.programCounter += 2; 
 	}
 
 	private void bitwiseAND() {
@@ -384,7 +395,7 @@ public class CPU {
 		
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
-		programCounter += 2; 
+		this.programCounter += 2; 
 	}
 
 	private void bitwiseOR() {
@@ -396,14 +407,14 @@ public class CPU {
 		
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
-		programCounter += 2;
+		this.programCounter += 2;
 	}
 	
 	private void setsVXToTheValueOfVY() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		writeInRegister(registerXPosition, readInRegister(registerYPosition));
-		programCounter += 2; 
+		this.programCounter += 2; 
 	}
 
 	private void addsNNToVX() {
@@ -411,14 +422,14 @@ public class CPU {
 		int registerData = (this.opcode & 0x00FF);
 		int result = (readInRegister(registerPosition) + registerData) & 0xFF;
 		writeInRegister(registerPosition, result);
-		programCounter += 2; 
+		this.programCounter += 2; 
 	}
 
 	private void setsVXToNN() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
 		int registerData = (this.opcode & 0x00FF);
 		writeInRegister(registerPosition, registerData);
-		programCounter += 2; 
+		this.programCounter += 2; 
 	}
 
 	private void skipsNextInstrIfVXEqualsVY() {
