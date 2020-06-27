@@ -2,7 +2,7 @@ package br.com.puppy8.devices;
 
 public class Screen {
 
-	static final int SCREEN_SIZE = 0x800;
+	public static final int SCREEN_SIZE = 0x800;
 
 	private byte[] pixelData;
 

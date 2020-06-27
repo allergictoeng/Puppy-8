@@ -5,6 +5,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import br.com.puppy8.devices.Screen;
+
 public class CPU {
 
 	private static final int REGISTERS_8BIT_SIZE16 = 0x10;
@@ -52,7 +54,9 @@ public class CPU {
 	
 	private Memory memory;
 	private Stack stack;
+	private Screen screen;
 	private int programCounter;
+	private int stackPointer;
 
 	private int opcode;
 	private int[] registers;
@@ -96,11 +100,13 @@ public class CPU {
 		memory.printFullMemory();
 	}
 
-	public CPU(Memory memory) {
+	public CPU(Memory memory, Screen screen) {
 		this.memory = memory;
 		this.programCounter = 0x200;
+		this.stackPointer = 0;
 		this.stack = new Stack(Stack.STACK_SIZE16);
 		this.registers = new int[REGISTERS_8BIT_SIZE16];
+		this.screen = screen;
 		this.index = 0;
 		this.delay = 0;
 		this.sound = 0;
@@ -502,13 +508,12 @@ public class CPU {
 	}
 	
 	private void returnFromASubroutine() {
-		// TODO Auto-generated method stub
-
+		this.programCounter = (this.stack.pop() + 2);
 	}
 
 	private void clearScreen() {
-		// TODO Auto-generated method stub
-
+		screen.clearScreen();
+		this.programCounter += 2;
 	}
 
 }

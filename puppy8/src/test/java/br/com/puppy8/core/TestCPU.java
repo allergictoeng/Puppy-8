@@ -5,15 +5,27 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.puppy8.devices.Screen;
+
 public class TestCPU {
 	
 	private Memory memory;
-	private CPU cpu;	
+	private CPU cpu;
+	private Screen screen;
 	
 	@Before
 	public void create() {
 		memory = new Memory(Memory.SIZE_4096);
-		cpu = new CPU(memory);
+		screen = new Screen(Screen.SCREEN_SIZE);
+		cpu = new CPU(memory, screen);
+	}
+	
+	@Test
+	public void testClearScreen() {
+		screen.writePixelValue(100, 0x2);
+		cpu.decode(0x00E0);
+		assertTrue(screen.readPixelValue(100) == 0x0);
+		assertTrue(cpu.getProgramCounter() == 0x202);
 	}
 	
 	@Test
