@@ -92,6 +92,10 @@ public class CPU {
 		System.out.println("Index: "+this.index);
 	}
 	
+	public void printStack() {
+		this.stack.print();
+	}
+	
 	public int getIndex() {
 		return this.index;
 	}
@@ -503,8 +507,40 @@ public class CPU {
 	}
 	
 	private void drawsASprite() {
-		// TODO Auto-generated method stub
-
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int nibble = (this.opcode & 0x000F);
+		writeInRegister(0xF, 0x0);
+		
+		for(int regY = 0 ; regY < nibble; regY++) {
+			int line = this.memory.read(this.index + regY);
+			
+			for(int regX = 0; regX < 8; regY++) {
+				int pixel = line & (0x80 >> regX);
+				
+				if(pixel != 0) {
+					int resultX = registerXPosition + regX; 
+					int resultY = registerYPosition + regY;
+					
+					resultX = resultX % 64;
+					resultY = resultY % 32;
+					
+					int indexLocal = resultY * 64 + resultX;
+					int pixelValue = this.screen.readPixelValue(indexLocal);
+					
+					if(pixelValue == 1) {
+						writeInRegister(0xF, 0x1);
+					}
+					
+					this.screen.writePixelValue(indexLocal, pixelValue ^ 1);
+				}
+				
+			}
+			
+		}
+		
+		this.programCounter += 2;
+		//[TODO]: Repaint screen function here!!, don`t forget //
 	}
 	
 	private void returnFromASubroutine() {

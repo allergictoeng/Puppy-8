@@ -253,6 +253,15 @@ public class TestCPU {
 	
 	@Test
 	public void testSetsVXToTheValueOfTheDelayTimer() {
-		// Start here!
+		// [TODO]: don`t forget this guy
 	}
+	
+	@Test
+	public void testDrawsASprite() {
+	//[TODO]: Repaint screen function here!!, don`t forget //
+	// Draw number 1 =	0x20, 0x60, 0x20 0x20, 0x70
+		
+		
+	}
+	
 }

@@ -47,9 +47,4 @@ public class Stack {
 	public void print() {
 		System.out.println(Arrays.toString(stack));
 	}
-	
-	public String toString() {
-		return Arrays.toString(stack);
-	}
-
 }
