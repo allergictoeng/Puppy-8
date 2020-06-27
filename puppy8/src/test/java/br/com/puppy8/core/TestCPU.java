@@ -29,6 +29,14 @@ public class TestCPU {
 	}
 	
 	@Test
+	public void testReturnFromASubroutine() {
+		cpu.decode(0x2EEE);
+		assertTrue(cpu.getProgramCounter() == 0xEEE);
+		cpu.decode(0x00EE);
+		assertTrue(cpu.getProgramCounter() == 0x202);
+	}
+	
+	@Test
 	public void testWriteAndReadRegisters() {
 		cpu.writeInRegister(0x01, 0x3c);
 		assertTrue(cpu.readInRegister(0x01) == 0x3c);
