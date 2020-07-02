@@ -271,13 +271,17 @@ public class CPU {
 	}
 
 	private void setsTheSoundTimerToVX() {
-		// TODO Auto-generated method stub
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		this.sound = readInRegister(registerPosition);
 		
+		this.programCounter += 2;
 	}
 
 	private void setsTheDelayTimerToVX() {
-		// TODO Auto-generated method stub
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		this.delay = readInRegister(registerPosition);
 		
+		this.programCounter += 2;
 	}
 
 	private void keyPressIsAwaitedAndThenStoredInVX() {

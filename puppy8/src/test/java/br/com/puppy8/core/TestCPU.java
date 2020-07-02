@@ -260,8 +260,20 @@ public class TestCPU {
 	public void testDrawsASprite() {
 	//[TODO]: Repaint screen function here!!, don`t forget //
 	// Draw number 1 =	0x20, 0x60, 0x20 0x20, 0x70
-		
-		
 	}
+
+	@Test
+	public void testSetsTheDelayTimerToVX() {
+		cpu.decode(0xF115);
+		// [TODO]: don`t forget this guy
+	}
+
+	@Test
+	public void testSetsTheSoundTimerToVX(){
+		cpu.decode(0xF218);
+		// [TODO]: don`t forget this guy
+	}
+	
+	
 	
 }
