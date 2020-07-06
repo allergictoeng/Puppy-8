@@ -23,7 +23,6 @@ public class Frame extends JFrame {
 		setTitle("Puppy-8");
         setResizable(false);
         setFocusable(true);
-        repaint();
         add(panel);
 	}
 

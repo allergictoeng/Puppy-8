@@ -7,6 +7,7 @@ import java.util.TimerTask;
 
 import br.com.puppy8.peripherals.HexadecimaKeypad;
 import br.com.puppy8.peripherals.Screen;
+import br.com.puppy8.peripherals.Sound;
 
 public class CPU {
 
@@ -58,11 +59,12 @@ public class CPU {
 	private Screen screen;
 	private int programCounter;
 	private HexadecimaKeypad hexadecimaKeypad;
+	private Sound sound;
 
 	private int opcode;
 	private int[] registers;
 	private int index;
-	private int sound;
+	private int soundTimers;
 	private int delay;
 
 	public int getProgramCounter() {
@@ -105,7 +107,7 @@ public class CPU {
 		memory.printFullMemory();
 	}
 
-	public CPU(Memory memory, Screen screen, HexadecimaKeypad hexadecimaKeypad) {
+	public CPU(Memory memory, Screen screen, HexadecimaKeypad hexadecimaKeypad, Sound sound) {
 		this.memory = memory;
 		this.programCounter = 0x200;
 		this.hexadecimaKeypad = hexadecimaKeypad;
@@ -114,7 +116,8 @@ public class CPU {
 		this.screen = screen;
 		this.index = 0;
 		this.delay = 0;
-		this.sound = 0;
+		this.soundTimers = 0;
+		this.sound = sound;
 		timers();
 	}
 
@@ -133,13 +136,13 @@ public class CPU {
 			delay--;
 		}
 
-		if (sound != 0) {
-			sound--;
-			//play io here
+		if (soundTimers != 0) {
+			soundTimers--;
+			this.sound.play();
 		}
 
-		if (sound == 0) {
-			//stop io here
+		if (soundTimers == 0) {
+			this.sound.stop();
 		}
 	}
 
@@ -301,7 +304,7 @@ public class CPU {
 
 	private void setsTheSoundTimerToVX() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		this.sound = readInRegister(registerPosition);
+		this.soundTimers = readInRegister(registerPosition);
 
 		this.programCounter += 2;
 	}
