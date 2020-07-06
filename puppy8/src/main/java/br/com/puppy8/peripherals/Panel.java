@@ -1,4 +1,4 @@
-package br.com.puppy8.devices;
+package br.com.puppy8.peripherals;
 
 import java.awt.Color;
 import java.awt.Dimension;

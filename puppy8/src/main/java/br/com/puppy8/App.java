@@ -1,8 +1,8 @@
 package br.com.puppy8;
 
-import br.com.puppy8.devices.Frame;
-import br.com.puppy8.devices.Panel;
-import br.com.puppy8.devices.Screen;
+import br.com.puppy8.peripherals.Frame;
+import br.com.puppy8.peripherals.Panel;
+import br.com.puppy8.peripherals.Screen;
 
 /**
  * Hello world!

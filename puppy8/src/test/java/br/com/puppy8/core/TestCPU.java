@@ -5,19 +5,22 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.puppy8.devices.Screen;
+import br.com.puppy8.peripherals.HexadecimaKeypad;
+import br.com.puppy8.peripherals.Screen;
 
 public class TestCPU {
 	
 	private Memory memory;
 	private CPU cpu;
 	private Screen screen;
+	private HexadecimaKeypad HexadecimaKeypad;
 	
 	@Before
 	public void create() {
 		memory = new Memory(Memory.SIZE_4096);
 		screen = new Screen(Screen.SCREEN_SIZE);
-		cpu = new CPU(memory, screen);
+		HexadecimaKeypad = new HexadecimaKeypad();
+		cpu = new CPU(memory, screen, HexadecimaKeypad);
 	}
 	
 	@Test
@@ -274,6 +277,37 @@ public class TestCPU {
 		// [TODO]: don`t forget this guy
 	}
 	
+	@Test
+	public void testAddsVXToI() {
+		// [TODO]: don`t forget this guy
+	}
 	
+	@Test
+	public void testSetsIToTheLocationOfTheSpriteForTheCharacterInVX() {
+		// [TODO]: don`t forget this guy
+	}
 	
+	@Test
+	public void testStoresTheBinaryCodedDecimalRepresentationOfVX() {
+		// [TODO]: don`t forget this guy
+	}
+	
+	@Test
+	public void testStoresV0ToVXInMemoryStartingAtAddressI() {
+		// [TODO]: don`t forget this guy
+	}
+	
+	@Test
+	public void testFillsV0ToVXWithValuesFromMemoryStartingAtAddressI() {
+		// [TODO]: don`t forget this guy		
+	}
+	
+	@Test
+	public void testSkipsTheNextInstructionIfTheKeyStoredInVXIsPressed() {
+		// [TODO]: don`t forget this guy
+	}
+	
+	@Test
+	public void testSkipsTheNextInstructionIfTheKeyStoredInVXisNPressed() {}
+	// [TODO]: don`t forget this guy
 }

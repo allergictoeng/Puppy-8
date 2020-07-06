@@ -5,14 +5,15 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import br.com.puppy8.devices.Screen;
+import br.com.puppy8.peripherals.HexadecimaKeypad;
+import br.com.puppy8.peripherals.Screen;
 
 public class CPU {
 
 	private static final int REGISTERS_8BIT_SIZE16 = 0x10;
 
-    private static final long MS_DELAY_INTERVAL = 17;
-	
+	private static final long MS_DELAY_INTERVAL = 17;
+
 	private static final int OP_00E0 = 0x00E0;
 	private static final int OP_00EE = 0x00EE;
 	private static final int OP_1NNN = 0x1000;
@@ -51,12 +52,12 @@ public class CPU {
 	private static final int OP_FX33 = 0x0033;
 	private static final int OP_FX55 = 0x0055;
 	private static final int OP_FX65 = 0x0065;
-	
+
 	private Memory memory;
 	private Stack stack;
 	private Screen screen;
 	private int programCounter;
-	private int stackPointer;
+	private HexadecimaKeypad hexadecimaKeypad;
 
 	private int opcode;
 	private int[] registers;
@@ -67,7 +68,7 @@ public class CPU {
 	public int getProgramCounter() {
 		return programCounter;
 	}
-	
+
 	public Stack getStack() {
 		return stack;
 	}
@@ -79,35 +80,35 @@ public class CPU {
 	public void writeInRegister(int registerV, int data) {
 		registers[registerV] = data;
 	}
-	
+
 	public void printRegisters() {
 		System.out.println(Arrays.toString(registers));
 	}
-	
+
 	public void printPC() {
 		System.out.println("pc: "+this.programCounter);
 	}
-	
+
 	public void printIndex() {
 		System.out.println("Index: "+this.index);
 	}
-	
+
 	public void printStack() {
 		this.stack.print();
 	}
-	
+
 	public int getIndex() {
 		return this.index;
 	}
-	
+
 	public void printFullMemory() {
 		memory.printFullMemory();
 	}
 
-	public CPU(Memory memory, Screen screen) {
+	public CPU(Memory memory, Screen screen, HexadecimaKeypad hexadecimaKeypad) {
 		this.memory = memory;
 		this.programCounter = 0x200;
-		this.stackPointer = 0;
+		this.hexadecimaKeypad = hexadecimaKeypad;
 		this.stack = new Stack(Stack.STACK_SIZE16);
 		this.registers = new int[REGISTERS_8BIT_SIZE16];
 		this.screen = screen;
@@ -116,7 +117,7 @@ public class CPU {
 		this.sound = 0;
 		timers();
 	}
-	
+
 	private void timers() {
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -141,7 +142,7 @@ public class CPU {
 			//stop io here
 		}
 	}
-	
+
 	public void decode(int opcode) {
 
 		this.opcode = opcode;
@@ -214,7 +215,7 @@ public class CPU {
 
 			case OP_EX9E: skipsTheNextInstructionIfTheKeyStoredInVXIsPressed(); break;
 
-			case OP_EXA1: skipsTheNextInstructionIfTheKeyStoredInVXisnPressed(); break;
+			case OP_EXA1: skipsTheNextInstructionIfTheKeyStoredInVXisNPressed(); break;
 
 			} break;
 		}
@@ -242,56 +243,97 @@ public class CPU {
 
 			} break;
 		}
-	  }
+		}
 	}
 
 	private void fillsV0ToVXWithValuesFromMemoryStartingAtAddressI() {
-		// TODO Auto-generated method stub
-		
+		int amountOfRegisters = (this.opcode & 0x0F00) >> 8;
+
+		for(int i = 0 ;i <= amountOfRegisters; i++) {
+			memory.read(this.index + i);
+		}
+
+		this.index = (this.index + amountOfRegisters + 1);
+
+		programCounter += 2;
 	}
 
 	private void storesV0ToVXInMemoryStartingAtAddressI() {
-		// TODO Auto-generated method stub
-		
+		int amountOfRegisters = (this.opcode & 0x0F00) >> 8;
+
+		for(int i = 0 ;i <= amountOfRegisters; i++) {
+			memory.write(this.index + i, readInRegister(i));
+		}
+
+		programCounter += 2;
 	}
 
+
 	private void storesTheBinaryCodedDecimalRepresentationOfVX() {
-		// TODO Auto-generated method stub
-		
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		int registerValue = readInRegister(registerPosition);
+
+		int hundreds = (registerValue - (registerValue % 100)) / 100;
+		registerValue -= hundreds * 100;
+		int tens = (registerValue - (registerValue % 10))/ 10;
+		registerValue -= tens * 10; 
+
+		memory.write(this.index, hundreds);
+		memory.write(this.index + 1, tens);
+		memory.write(this.index + 2, registerValue);
+
+		programCounter += 2;
 	}
 
 	private void setsIToTheLocationOfTheSpriteForTheCharacterInVX() {
-		// TODO Auto-generated method stub
-		
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		this.index = (0x050 + readInRegister(registerPosition) * 5);
+
+		this.programCounter += 2;
 	}
 
 	private void addsVXToI() {
-		// TODO Auto-generated method stub
-		
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		this.index = readInRegister(registerPosition);
+
+		this.programCounter += 2;
 	}
 
 	private void setsTheSoundTimerToVX() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
 		this.sound = readInRegister(registerPosition);
-		
+
 		this.programCounter += 2;
 	}
 
 	private void setsTheDelayTimerToVX() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
 		this.delay = readInRegister(registerPosition);
-		
+
 		this.programCounter += 2;
 	}
 
-	private void keyPressIsAwaitedAndThenStoredInVX() {
-		// TODO Auto-generated method stub
+	private void keyPressIsAwaitedAndThenStoredInVX(){
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		int currentKey = hexadecimaKeypad.getKeyPressed();
+		
+		while(currentKey == 0) {
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			currentKey = hexadecimaKeypad.getKeyPressed();
+		}
+		
+		writeInRegister(registerPosition, currentKey);
+		this.programCounter += 2;
 		
 	}
 
 	private void setsVXToTheValueOfTheDelayTimer() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		
+
 		writeInRegister(registerPosition, this.delay);
 		this.programCounter += 2;
 	}
@@ -299,9 +341,9 @@ public class CPU {
 	private void setsVXResultOfABitwiseAndOperationOnARandomNumber() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
 		int registerData = (this.opcode & 0x00FF);
-		
+
 		int result = (registerData & new Random().nextInt(0x100));
-		
+
 		writeInRegister(registerPosition, result);
 		this.programCounter += 2;
 	}
@@ -326,14 +368,14 @@ public class CPU {
 	private void shiftsVXtoTheLeftBy1() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerXResult = readInRegister(registerXPosition);
-		
+
 		int result = (registerXResult << 1);
-		
+
 		if((registerXResult & 0x000F) == 1)
 			writeInRegister(0xF, 1);
 		else
 			writeInRegister(0xF, 0);
-		
+
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
 		this.programCounter += 2;
@@ -342,14 +384,14 @@ public class CPU {
 	private void shiftsVXToTheRightBy1() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerXResult = readInRegister(registerXPosition);
-		
+
 		int result = (registerXResult >> 1);
-		
+
 		if((registerXResult & 0x000F) == 1)
 			writeInRegister(0xF, 1);
 		else
 			writeInRegister(0xF, 0);
-		
+
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
 		this.programCounter += 2; 		
@@ -360,14 +402,14 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
-		
+
 		int result = (registerYResult - registerXResult);
-		
+
 		if(registerYResult > registerXResult)
 			writeInRegister(0xF, 1);
 		else
 			writeInRegister(0xF, 0);
-		
+
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
 		this.programCounter += 2; 
@@ -378,14 +420,14 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
-		
+
 		int result = (registerXResult - registerYResult);
-		
+
 		if(registerXResult > registerYResult)
 			writeInRegister(0xF, 1);
 		else
 			writeInRegister(0xF, 0);
-		
+
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);		
 		this.programCounter += 2; 
@@ -396,14 +438,14 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
-		
+
 		int result = (registerXResult + registerYResult);
-		
+
 		if(result > 0xF)
 			writeInRegister(0xF, 1);
 		else
 			writeInRegister(0xF, 0);
-		
+
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);		
 		this.programCounter += 2;
@@ -414,9 +456,9 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
-		
+
 		int result = (registerXResult ^= registerYResult);
-		
+
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
 		this.programCounter += 2; 
@@ -427,9 +469,9 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
-		
+
 		int result = (registerXResult &= registerYResult);
-		
+
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
 		this.programCounter += 2; 
@@ -441,12 +483,12 @@ public class CPU {
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
 		int result = (registerXResult |= registerYResult);
-		
+
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
 		this.programCounter += 2;
 	}
-	
+
 	private void setsVXToTheValueOfVY() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
@@ -499,54 +541,64 @@ public class CPU {
 	private void jumpToAdress() {
 		this.programCounter = this.opcode & 0x0FFF;
 	}
-	
-	private void skipsTheNextInstructionIfTheKeyStoredInVXisnPressed() {
-		// TODO Auto-generated method stub
 
+	private void skipsTheNextInstructionIfTheKeyStoredInVXisNPressed() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		
+		if(this.hexadecimaKeypad.getKeyPressed() != readInRegister(registerPosition)) 
+			this.programCounter += 4; 
+		else
+			this.programCounter += 2;
+		
 	}
 
 	private void skipsTheNextInstructionIfTheKeyStoredInVXIsPressed() {
-		// TODO Auto-generated method stub
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		
+		if(this.hexadecimaKeypad.getKeyPressed() == readInRegister(registerPosition)) 
+			this.programCounter += 4; 
+		else
+			this.programCounter += 2;
 
 	}
-	
+
 	private void drawsASprite() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int nibble = (this.opcode & 0x000F);
 		writeInRegister(0xF, 0x0);
-		
+
 		for(int regY = 0 ; regY < nibble; regY++) {
 			int line = this.memory.read(this.index + regY);
-			
+
 			for(int regX = 0; regX < 8; regY++) {
 				int pixel = line & (0x80 >> regX);
-				
+
 				if(pixel != 0) {
 					int resultX = registerXPosition + regX; 
 					int resultY = registerYPosition + regY;
-					
+
 					resultX = resultX % 64;
 					resultY = resultY % 32;
-					
+
 					int indexLocal = resultY * 64 + resultX;
 					int pixelValue = this.screen.readPixelValue(indexLocal);
-					
+
 					if(pixelValue == 1) {
 						writeInRegister(0xF, 0x1);
 					}
-					
+
 					this.screen.writePixelValue(indexLocal, pixelValue ^ 1);
 				}
-				
+
 			}
-			
+
 		}
-		
+
 		this.programCounter += 2;
 		//[TODO]: Repaint screen function here!!, don`t forget //
 	}
-	
+
 	private void returnFromASubroutine() {
 		this.programCounter = (this.stack.pop() + 2);
 	}

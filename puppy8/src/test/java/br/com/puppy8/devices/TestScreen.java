@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.puppy8.peripherals.Screen;
+
 public class TestScreen {
 	
 	Screen screen;
