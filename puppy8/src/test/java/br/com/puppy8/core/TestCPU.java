@@ -6,28 +6,26 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.puppy8.peripherals.HexadecimaKeypad;
+import br.com.puppy8.peripherals.Peripherals;
 import br.com.puppy8.peripherals.Screen;
 
 public class TestCPU {
 	
 	private Memory memory;
 	private CPU cpu;
-	private Screen screen;
-	private HexadecimaKeypad HexadecimaKeypad;
+	private Peripherals peripherals;
 	
 	@Before
 	public void create() {
 		memory = new Memory(Memory.SIZE_4096);
-		screen = new Screen(Screen.SCREEN_SIZE);
-		HexadecimaKeypad = new HexadecimaKeypad();
-		cpu = new CPU(memory, screen, HexadecimaKeypad);
+		cpu = new CPU(memory, peripherals);
 	}
 	
 	@Test
 	public void testClearScreen() {
-		screen.writePixelValue(100, 0x2);
+		peripherals.writePixelValue(100, 0x2);
 		cpu.decode(0x00E0);
-		assertTrue(screen.readPixelValue(100) == 0x0);
+		assertTrue(peripherals.readPixelValue(100) == 0x0);
 		assertTrue(cpu.getProgramCounter() == 0x202);
 	}
 	

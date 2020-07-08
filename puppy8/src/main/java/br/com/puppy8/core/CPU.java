@@ -5,15 +5,9 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import br.com.puppy8.peripherals.HexadecimaKeypad;
-import br.com.puppy8.peripherals.Screen;
-import br.com.puppy8.peripherals.Sound;
+import br.com.puppy8.peripherals.Peripherals;
 
 public class CPU {
-
-	private static final int REGISTERS_8BIT_SIZE16 = 0x10;
-
-	private static final long MS_DELAY_INTERVAL = 17;
 
 	private static final int OP_00E0 = 0x00E0;
 	private static final int OP_00EE = 0x00EE;
@@ -53,19 +47,21 @@ public class CPU {
 	private static final int OP_FX33 = 0x0033;
 	private static final int OP_FX55 = 0x0055;
 	private static final int OP_FX65 = 0x0065;
+	
+	private static final int REGISTERS_8BIT_SIZE16 = 0x10;
+	
+	private static final long MS_DELAY_INTERVAL = 17;
 
+	private Peripherals peripherals;
 	private Memory memory;
 	private Stack stack;
-	private Screen screen;
 	private int programCounter;
-	private HexadecimaKeypad hexadecimaKeypad;
-	private Sound sound;
 
 	private int opcode;
-	private int[] registers;
 	private int index;
 	private int soundTimers;
 	private int delay;
+	private int [] registers;
 
 	public int getProgramCounter() {
 		return programCounter;
@@ -107,17 +103,15 @@ public class CPU {
 		memory.printFullMemory();
 	}
 
-	public CPU(Memory memory, Screen screen, HexadecimaKeypad hexadecimaKeypad, Sound sound) {
+	public CPU(Memory memory, Peripherals peripherals) {
 		this.memory = memory;
 		this.programCounter = 0x200;
-		this.hexadecimaKeypad = hexadecimaKeypad;
+		this.peripherals = peripherals;
 		this.stack = new Stack(Stack.STACK_SIZE16);
 		this.registers = new int[REGISTERS_8BIT_SIZE16];
-		this.screen = screen;
 		this.index = 0;
 		this.delay = 0;
 		this.soundTimers = 0;
-		this.sound = sound;
 		timers();
 	}
 
@@ -138,14 +132,15 @@ public class CPU {
 
 		if (soundTimers != 0) {
 			soundTimers--;
-			this.sound.play();
+			this.peripherals.playSound();
 		}
 
 		if (soundTimers == 0) {
-			this.sound.stop();
+			this.peripherals.stopSound();
 		}
+		
 	}
-
+	
 	public void decode(int opcode) {
 
 		this.opcode = opcode;
@@ -246,7 +241,7 @@ public class CPU {
 
 			} break;
 		}
-		}
+	  }
 	}
 
 	private void fillsV0ToVXWithValuesFromMemoryStartingAtAddressI() {
@@ -318,7 +313,7 @@ public class CPU {
 
 	private void keyPressIsAwaitedAndThenStoredInVX(){
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		int currentKey = hexadecimaKeypad.getKeyPressed();
+		int currentKey = this.peripherals.getKeyPressed();
 		
 		while(currentKey == 0) {
 			try {
@@ -326,7 +321,7 @@ public class CPU {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			currentKey = hexadecimaKeypad.getKeyPressed();
+			currentKey = this.peripherals.getKeyPressed();
 		}
 		
 		writeInRegister(registerPosition, currentKey);
@@ -548,7 +543,7 @@ public class CPU {
 	private void skipsTheNextInstructionIfTheKeyStoredInVXisNPressed() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
 		
-		if(this.hexadecimaKeypad.getKeyPressed() != readInRegister(registerPosition)) 
+		if(this.peripherals.getKeyPressed() != readInRegister(registerPosition)) 
 			this.programCounter += 4; 
 		else
 			this.programCounter += 2;
@@ -558,7 +553,7 @@ public class CPU {
 	private void skipsTheNextInstructionIfTheKeyStoredInVXIsPressed() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
 		
-		if(this.hexadecimaKeypad.getKeyPressed() == readInRegister(registerPosition)) 
+		if(this.peripherals.getKeyPressed() == readInRegister(registerPosition)) 
 			this.programCounter += 4; 
 		else
 			this.programCounter += 2;
@@ -585,13 +580,13 @@ public class CPU {
 					resultY = resultY % 32;
 
 					int indexLocal = resultY * 64 + resultX;
-					int pixelValue = this.screen.readPixelValue(indexLocal);
+					int pixelValue = this.peripherals.readPixelValue(indexLocal);
 
 					if(pixelValue == 1) {
 						writeInRegister(0xF, 0x1);
 					}
 
-					this.screen.writePixelValue(indexLocal, pixelValue ^ 1);
+					this.peripherals.writePixelValue(indexLocal, pixelValue ^ 1);
 				}
 
 			}
@@ -599,7 +594,7 @@ public class CPU {
 		}
 
 		this.programCounter += 2;
-		//[TODO]: Repaint screen function here!!, don`t forget //
+		this.peripherals.repaintScreen();
 	}
 
 	private void returnFromASubroutine() {
@@ -607,7 +602,7 @@ public class CPU {
 	}
 
 	private void clearScreen() {
-		screen.clearScreen();
+		this.peripherals.clearScreen();
 		this.programCounter += 2;
 	}
 
