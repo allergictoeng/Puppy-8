@@ -156,7 +156,6 @@ public class CPU {
 		if (soundTimers == 0) {
 			this.peripherals.stopSound();
 		}
-		
 	}
 	
 	public void decode(int opcode) {

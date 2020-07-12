@@ -3,7 +3,7 @@ package br.com.puppy8.core;
 import java.util.Arrays;
 
 public class Memory {
-	static final int SIZE_4096 = 0x1000;
+	public static final int SIZE_4096 = 0x1000;
 	int[] memory;
 	
 	public Memory(int size) {

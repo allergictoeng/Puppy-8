@@ -1,12 +1,14 @@
 package br.com.puppy8;
 
 import br.com.puppy8.core.CPU;
+import br.com.puppy8.core.Memory;
 import br.com.puppy8.peripherals.Frame;
 import br.com.puppy8.peripherals.HexadecimaKeypad;
 import br.com.puppy8.peripherals.Panel;
 import br.com.puppy8.peripherals.Peripherals;
 import br.com.puppy8.peripherals.Screen;
 import br.com.puppy8.peripherals.Sound;
+import br.com.puppy8.utils.TemporaryFontProgram;
 
 public class Emulator extends Thread implements Peripherals{
 	
@@ -17,14 +19,29 @@ public class Emulator extends Thread implements Peripherals{
 	private Panel panel;
 	private Screen screen;
 	private Sound sound;
+	private Memory memory;
+	// temporary
+	TemporaryFontProgram temp;
+	
+	// insert args here!!	
+	public Emulator() {
+		memory = new Memory(Memory.SIZE_4096);
+		cpu = new CPU(memory, this);
+		screen = new Screen(Screen.SCREEN_SIZE);
+		panel = new Panel(screen.getScreen());
+		frame = new Frame();
+		frame.setup(panel);
+		hexadecimaKeypad = new HexadecimaKeypad();
+		sound = new Sound();
 		
-	public Emulator(Arguments arguments) {
-		
+		//temporary 
+		temp = new TemporaryFontProgram(memory);		
 	}
-
-	public void emulate() {
-		
+	
+	public void loadProgram() {
+		temp.loadFont();
 	}
+	
 	
 	@Override
 	public void run() {
@@ -85,15 +102,5 @@ public class Emulator extends Thread implements Peripherals{
 	public int getKeyPressed() {
 		return hexadecimaKeypad.getKeyPressed();
 	}
-	
-	//Sound sound = new Sound();
-	//sound.play();
-	//sound.stop();
-	//Screen scr = new Screen(0x800);
-	//scr.writePixelValue(0, 1111);
-	//Frame frame = new Frame();
-	//Panel panel = new Panel(scr.getScreen());
-	//frame.setup(panel);
-	//frame.repaint();
-	
+		
 }
