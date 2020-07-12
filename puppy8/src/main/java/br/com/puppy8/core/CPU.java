@@ -61,7 +61,8 @@ public class CPU {
 	private int index;
 	private int soundTimers;
 	private int delay;
-	private int [] registers;
+	private long nextTimer;
+	private int [] registers;	
 
 	public int getProgramCounter() {
 		return programCounter;
@@ -112,9 +113,26 @@ public class CPU {
 		this.index = 0;
 		this.delay = 0;
 		this.soundTimers = 0;
+		this.nextTimer = 0;
 		timers();
 	}
-
+	
+	
+	public void fetchDecodeExecuteCycle() {
+		
+		int instruction = ((this.memory.read(this.programCounter++) << 8) & 0xFF00) | 
+						   (this.memory.read(this.programCounter++) & 0xFF);
+		
+		long time = System.currentTimeMillis();
+		
+		if(time > this.nextTimer ) {
+			timers();
+			this.nextTimer = time + (1000/60);
+		}
+		
+		decode(instruction);		
+	}
+	
 	private void timers() {
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {

@@ -1,48 +1,89 @@
 package br.com.puppy8;
 
+import br.com.puppy8.core.CPU;
+import br.com.puppy8.peripherals.Frame;
+import br.com.puppy8.peripherals.HexadecimaKeypad;
+import br.com.puppy8.peripherals.Panel;
 import br.com.puppy8.peripherals.Peripherals;
+import br.com.puppy8.peripherals.Screen;
+import br.com.puppy8.peripherals.Sound;
 
 public class Emulator extends Thread implements Peripherals{
-
-	@Override
-	public void repaintScreen() {		
-	}
-
-	@Override
-	public void clearScreen() {		
-	}
-
-	@Override
-	public int readPixelValue(int indexLocal) {		
-		return 0;
-	}
-
-	@Override
-	public void writePixelValue(int indexLocal, int i) {
-	}
-
-	@Override
-	public void playSound() {
-	}
-
-	@Override
-	public void stopSound() {	
-	}
-
-	@Override
-	public int getKeyPressed() {
-		return 0;
-	}
 	
-	
-	
+	private CPU cpu;
+	private boolean running;
+	private Frame frame;
+	private HexadecimaKeypad hexadecimaKeypad;
+	private Panel panel;
+	private Screen screen;
+	private Sound sound;
+		
 	public Emulator(Arguments arguments) {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public void emulate() {
-		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void run() {
+		this.running = true;
+		try {
+			cpu.fetchDecodeExecuteCycle();
+			try {
+				sleep(2);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				System.exit(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+	}
+	
+	public void stopEmulation() {
+		this.running = false;
+		clearScreen();
+		repaintScreen();
+		stopSound();
+	}
+	
+	@Override
+	public void repaintScreen() {	
+		frame.repaint();
+	}
+	
+	@Override
+	public void clearScreen() {		
+		screen.clearScreen();
+	}
+	
+	@Override
+	public int readPixelValue(int indexLocal) {		
+		return screen.readPixelValue(indexLocal);
+	}
+	
+	@Override
+	public void writePixelValue(int position, int value) {
+		screen.writePixelValue(position, value);
+	}
+	
+	@Override
+	public void playSound() {
+		sound.play();
+	}
+	
+	@Override
+	public void stopSound() {	
+		sound.stop();
+	}
+	
+	@Override
+	public int getKeyPressed() {
+		return hexadecimaKeypad.getKeyPressed();
 	}
 	
 	//Sound sound = new Sound();
@@ -54,15 +95,5 @@ public class Emulator extends Thread implements Peripherals{
 	//Panel panel = new Panel(scr.getScreen());
 	//frame.setup(panel);
 	//frame.repaint();
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }
