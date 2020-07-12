@@ -8,7 +8,6 @@ public class App
 {
 	public static void main( String[] args ){
 		Emulator emulator = new Emulator();
-			emulator.loadProgram();
 			emulator.start();
 			
 	}

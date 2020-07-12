@@ -8,6 +8,7 @@ import br.com.puppy8.peripherals.Panel;
 import br.com.puppy8.peripherals.Peripherals;
 import br.com.puppy8.peripherals.Screen;
 import br.com.puppy8.peripherals.Sound;
+import br.com.puppy8.utils.Program;
 import br.com.puppy8.utils.TemporaryFontProgram;
 
 public class Emulator extends Thread implements Peripherals{
@@ -22,24 +23,29 @@ public class Emulator extends Thread implements Peripherals{
 	private Memory memory;
 	// temporary
 	TemporaryFontProgram temp;
+	private Program program;
 	
 	// insert args here!!	
 	public Emulator() {
 		memory = new Memory(Memory.SIZE_4096);
-		cpu = new CPU(memory, this);
 		screen = new Screen(Screen.SCREEN_SIZE);
 		panel = new Panel(screen.getScreen());
 		frame = new Frame();
 		frame.setup(panel);
 		hexadecimaKeypad = new HexadecimaKeypad();
 		sound = new Sound();
+
+		cpu = new CPU(memory, this);
 		
-		//temporary 
-		temp = new TemporaryFontProgram(memory);		
-	}
-	
-	public void loadProgram() {
+		//Temporary
+		temp = new TemporaryFontProgram(memory);
 		temp.loadFont();
+
+		// in progress!!!!
+		program = new Program(memory);
+		program.loadProgram();
+		
+		
 	}
 	
 	

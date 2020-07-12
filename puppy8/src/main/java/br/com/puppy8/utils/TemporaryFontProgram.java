@@ -33,7 +33,7 @@ public class TemporaryFontProgram {
 	    public void loadFont(){
 	        for (int i = 0; i < FONTSET.length; i++) {
 	            int address = MEMORY_OFFSET + i;
-	            char value = (char) FONTSET[i];
+	            int value = FONTSET[i];
 
 	            memory.write(address, value);
 
