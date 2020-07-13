@@ -26,15 +26,17 @@ public class Emulator extends Thread implements Peripherals{
 	private Program program;
 	
 	// insert args here!!	
-	public Emulator() {
+	public Emulator(Frame frame) {
+		this.frame = frame;
+		
 		memory = new Memory(Memory.SIZE_4096);
 		screen = new Screen(Screen.SCREEN_SIZE);
+		
 		panel = new Panel(screen.getScreen());
-		frame = new Frame();
-		frame.setup(panel);
+		this.frame.setup(panel);
+		
 		hexadecimaKeypad = new HexadecimaKeypad();
 		sound = new Sound();
-
 		cpu = new CPU(memory, this);
 		
 		//Temporary
@@ -47,8 +49,7 @@ public class Emulator extends Thread implements Peripherals{
 		
 		
 	}
-	
-	
+		
 	@Override
 	public void run() {
 		this.running = true;

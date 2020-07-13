@@ -1,5 +1,7 @@
 package br.com.puppy8;
 
+import br.com.puppy8.peripherals.Frame;
+
 /**
  * Hello world!
  *
@@ -7,8 +9,6 @@ package br.com.puppy8;
 public class App 
 {
 	public static void main( String[] args ){
-		Emulator emulator = new Emulator();
-			emulator.start();
-			
+		EmulatorController.getInstance();
 	}
 }
