@@ -21,7 +21,7 @@ public class Frame extends JFrame {
 		this.panel = panel;
 
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		//pack();
+		pack();
 
 		int width = WIDTH + getInsets().right + getInsets().left;
 		int height = HEIGHT + getInsets().top + getInsets().bottom;
@@ -29,15 +29,23 @@ public class Frame extends JFrame {
 		
 		setLayout(new BorderLayout());
 		
+		 
 		pack();
+		
 		setTitle("Puppy-8");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setFocusable(true);
 		
-		emulatorController.setRunner(this, "");
 		
+		if(this.panel != null) {
+			add(this.panel);
+		}
 		
 	}
-
+	
+	public void runner() {
+		emulatorController.setRunner(this, "");
+	}
+	
 }

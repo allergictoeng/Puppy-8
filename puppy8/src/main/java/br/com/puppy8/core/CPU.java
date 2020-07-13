@@ -119,9 +119,8 @@ public class CPU {
 	
 	
 	public void fetchDecodeExecuteCycle() {
-		
-		int instruction = ((this.memory.read(this.programCounter++) << 8) & 0xFF00) | 
-						   (this.memory.read(this.programCounter++) & 0xFF);
+		//work in progress!!!!
+		int instruction = (this.memory.read(this.programCounter));
 		
 		long time = System.currentTimeMillis();
 		
@@ -129,7 +128,6 @@ public class CPU {
 			timers();
 			this.nextTimer = time + (1000/60);
 		}
-		
 		decode(instruction);		
 	}
 	

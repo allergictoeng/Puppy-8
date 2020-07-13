@@ -15,14 +15,11 @@ public class Memory {
 	}
 
 	public int read(int adress) {
-		if(adress < 0 || adress >= SIZE_4096)
-			return 0; 
-		
 		return memory[adress];
 	}
 
 	public void write(int data, int adress) {
-		memory[adress] = data;
+			memory[adress] = data;
 	}
 	
 	public void printFullMemory() {

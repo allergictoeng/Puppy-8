@@ -32,11 +32,13 @@ public class Emulator extends Thread implements Peripherals{
 		memory = new Memory(Memory.SIZE_4096);
 		screen = new Screen(Screen.SCREEN_SIZE);
 		
+		
 		panel = new Panel(screen.getScreen());
 		this.frame.setup(panel);
-		
+
 		hexadecimaKeypad = new HexadecimaKeypad();
 		sound = new Sound();
+
 		cpu = new CPU(memory, this);
 		
 		//Temporary
@@ -45,8 +47,8 @@ public class Emulator extends Thread implements Peripherals{
 
 		// in progress!!!!
 		program = new Program(memory);
-		program.loadProgram();
-		
+		program.loadProgram("roms//test_opcode.ch8");
+		//program.loadTest();
 		
 	}
 		

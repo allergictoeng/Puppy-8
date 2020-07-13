@@ -14,13 +14,13 @@ public class EmulatorController {
 			Frame frame = new Frame(emulatorController);
 			frame.setup(null);
 			frame.setVisible(true);
+			frame.runner();
 		}
 		return emulatorController;
 	}
 	
 	public void setRunner(Frame frame, String filepath) {
 		if(emulator != null && emulator instanceof Emulator) stopRunner();
-		//emulator.clearScreen();
 		emulator = new Emulator(frame);
 		emulator.start();
 	}
