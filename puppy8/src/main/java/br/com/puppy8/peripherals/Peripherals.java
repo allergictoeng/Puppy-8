@@ -8,7 +8,7 @@ public interface Peripherals {
 	
 	public int readPixelValue(int indexLocal);
 	
-	public void writePixelValue(int indexLocal, int i);
+	public void writePixelValue(int indexLocal, int value);
 
 	public void playSound();
 
