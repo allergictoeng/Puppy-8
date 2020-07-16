@@ -1,5 +1,7 @@
 package br.com.puppy8;
 
+import java.util.Arrays;
+
 import br.com.puppy8.core.CPU;
 import br.com.puppy8.core.Memory;
 import br.com.puppy8.peripherals.Frame;
@@ -59,7 +61,7 @@ public class Emulator extends Thread implements Peripherals{
 			try {
 				cpu.fetchDecodeExecuteCycle();				
 				try {
-					sleep(2);
+					sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					System.exit(0);
@@ -95,7 +97,7 @@ public class Emulator extends Thread implements Peripherals{
 	
 	@Override
 	public void writePixelValue(int position, int value) {
-		screen.writePixelValue(position, value);
+		screen.writePixelValue(position, value);		
 	}
 	
 	@Override

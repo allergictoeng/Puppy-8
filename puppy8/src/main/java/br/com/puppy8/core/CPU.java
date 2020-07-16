@@ -583,7 +583,7 @@ public class CPU {
 		for(int regY = 0 ; regY < nibble; regY++) {
 			int line = this.memory.read(this.index + regY);
 
-			for(int regX = 0; regX < 8; regY++) {
+			for(int regX = 0; regX < 8; regX++) {
 				int pixel = line & (0x80 >> regX);
 
 				if(pixel != 0) {
@@ -600,7 +600,7 @@ public class CPU {
 						writeInRegister(0xF, 0x1);
 					}
 
-					this.peripherals.writePixelValue(indexLocal, pixelValue ^ 1);
+					this.peripherals.writePixelValue(indexLocal, pixelValue ^ 1);					
 				}
 
 			}
