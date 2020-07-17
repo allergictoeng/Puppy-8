@@ -119,7 +119,8 @@ public class CPU {
 	
 	
 	public void fetchDecodeExecuteCycle() {
-		int instruction = ((memory.read(this.programCounter++) << 8) & 0xFF00) | (memory.read(this.programCounter++) & 0xFF);
+		int adress = this.programCounter;
+		int instruction = ((memory.read(adress) << 8) | memory.read(adress + 1));
 		
 		long time = System.currentTimeMillis();
 		
@@ -257,7 +258,18 @@ public class CPU {
 		}
 	  }
 	}
-
+	
+	private void clearScreen() {
+		this.peripherals.clearScreen();
+		this.programCounter += 2;
+	}
+	
+	private void returnFromASubroutine() {
+		this.programCounter = (this.stack.pop() + 2);
+	}
+		
+	// -- organize functions	
+	
 	private void fillsV0ToVXWithValuesFromMemoryStartingAtAddressI() {
 		int amountOfRegisters = (this.opcode & 0x0F00) >> 8;
 
@@ -580,15 +592,15 @@ public class CPU {
 		int nibble = (this.opcode & 0x000F);
 		writeInRegister(0xF, 0x0);
 
-		for(int regY = 0 ; regY < nibble; regY++) {
-			int line = this.memory.read(this.index + regY);
+		for(int rowY = 0 ; rowY < nibble; rowY++) {
+			int line = this.memory.read(this.index + rowY);
 
-			for(int regX = 0; regX < 8; regX++) {
-				int pixel = line & (0x80 >> regX);
+			for(int colX = 0; colX < 8; colX++) {
+				int pixel = line & (0x80 >> colX);
 
 				if(pixel != 0) {
-					int resultX = registerXPosition + regX; 
-					int resultY = registerYPosition + regY;
+					int resultX = registerXPosition + colX; 
+					int resultY = registerYPosition + rowY;
 
 					resultX = resultX % 64;
 					resultY = resultY % 32;
@@ -610,14 +622,4 @@ public class CPU {
 		this.programCounter += 2;
 		this.peripherals.repaintScreen();
 	}
-
-	private void returnFromASubroutine() {
-		this.programCounter = (this.stack.pop() + 2);
-	}
-
-	private void clearScreen() {
-		this.peripherals.clearScreen();
-		this.programCounter += 2;
-	}
-
 }

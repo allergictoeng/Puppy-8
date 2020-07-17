@@ -37,6 +37,7 @@ public class Program {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        memory.printFullMemory();
     }
 	
 	public void loadTest() {

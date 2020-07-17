@@ -32,8 +32,8 @@ public class Panel extends JPanel {
         offGraphics.fillRect(0, 0, offScreenImageDimension.width, offScreenImageDimension.height);
         offGraphics.setColor(getForeground());
 
-        for (int i = 0; i < screen.length; i++) {
-            Color pixelColor = screen[i] == 0 ? Color.BLACK : Color.WHITE;
+        for (int i = 0; i < this.screen.length; i++) {
+            Color pixelColor = this.screen[i] == 0 ? Color.BLACK : Color.WHITE;
             offGraphics.setColor(pixelColor);
 
             int positionX = i % 64;

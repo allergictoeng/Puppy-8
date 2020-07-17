@@ -19,7 +19,7 @@ public class Memory {
 	}
 
 	public void write(int data, int adress) {
-			memory[adress] = data;
+			memory[adress] = (data & 0xFF);
 	}
 	
 	public void printFullMemory() {
