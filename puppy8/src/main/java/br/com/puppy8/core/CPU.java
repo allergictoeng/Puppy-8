@@ -268,6 +268,14 @@ public class CPU {
 		this.programCounter = (this.stack.pop() + 2);
 	}
 		
+	private void jumpToAdress() {
+		this.programCounter = this.opcode & 0x0FFF;
+	}
+	
+	private void callsSubroutineAt() {
+		this.stack.push(this.programCounter);
+		this.programCounter = this.opcode & 0x0FFF;
+	}
 	// -- organize functions	
 	
 	private void fillsV0ToVXWithValuesFromMemoryStartingAtAddressI() {
@@ -556,15 +564,7 @@ public class CPU {
 		int registerResult = readInRegister(registerPosition);
 		this.programCounter += (registerResult == registerData)? 4 : 2; // Increment by 2 or 4
 	}
-
-	private void callsSubroutineAt() {
-		this.stack.push(this.programCounter);
-		this.programCounter = this.opcode & 0x0FFF;
-	}
-
-	private void jumpToAdress() {
-		this.programCounter = this.opcode & 0x0FFF;
-	}
+	
 
 	private void skipsTheNextInstructionIfTheKeyStoredInVXisNPressed() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
@@ -588,35 +588,31 @@ public class CPU {
 
 	private void drawsASprite() {
 		
-		int registerXPosition = (this.opcode & 0x0F00) >> 8;
-		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int registerXPosition = readInRegister((this.opcode & 0x0F00) >> 8);
+		int registerYPosition = readInRegister((this.opcode & 0x00F0) >> 4);
 		int nibble = (this.opcode & 0x000F);
-		
 		writeInRegister(0xF, 0x0);
 
 		for(int rowY = 0 ; rowY < nibble; rowY++) {
-			
 			int line = this.memory.read(this.index + rowY);
 			int resultY = registerYPosition + rowY;
 			resultY = resultY % 32;
-			
+
 			for(int colX = 0; colX < 8; colX++) {
 				int pixel = line & (0x80 >> colX);
-				int resultX = registerXPosition + colX;
+				int resultX = registerXPosition + colX; 
 				resultX = resultX % 64;
 
 				if(pixel != 0) {
-			
+
 					int indexLocal = resultX + resultY * 64;
 					int pixelValue = this.peripherals.readPixelValue(indexLocal);
-										
+
 					if(pixelValue == 1) {
 						writeInRegister(0xF, 0x1);
 					}
-					
-					int teste = pixelValue ^= 1;
-					
-					this.peripherals.writePixelValue(indexLocal, teste);					
+
+					this.peripherals.writePixelValue(indexLocal, pixelValue ^ 1);					
 				}
 
 			}
@@ -625,5 +621,6 @@ public class CPU {
 
 		this.programCounter += 2;
 		this.peripherals.repaintScreen();
+		//System.out.println("DRW "+registerXPosition+", "+registerYPosition+", "+nibble);
 	}
 }

@@ -47,7 +47,7 @@ public class Emulator extends Thread implements Peripherals{
 
 		// in progress!!!!
 		program = new Program(memory);
-		program.loadProgram("roms//ch8pic.ch8");
+		program.loadProgram("roms//testop.ch8");
 		//program.loadTest();
 		
 	}
@@ -59,7 +59,7 @@ public class Emulator extends Thread implements Peripherals{
 			try {
 				cpu.fetchDecodeExecuteCycle();				
 				try {
-					sleep(200);
+					sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					System.exit(0);

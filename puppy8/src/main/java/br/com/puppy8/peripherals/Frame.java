@@ -9,7 +9,7 @@ import br.com.puppy8.EmulatorController;
 
 public class Frame extends JFrame {
 	private static final int WIDTH = 640;
-	private static final int HEIGHT = 320;
+	private static final int HEIGHT = 340;
 	private Panel panel;
 	private EmulatorController emulatorController;
 
