@@ -31,7 +31,7 @@ public class Program {
         try {
             while (inputStream.available() > 0) {
                 int value = inputStream.readByte();
-                memory.write(value, address);
+                memory.write(address, value);
                 address++;
             }
         } catch (IOException e) {
@@ -57,7 +57,7 @@ public class Program {
 	            0xF0, 0x80, 0x80, 0x80, 0xF0, // C
 	            0xE0, 0x90, 0x90, 0x90, 0xE0, // D
 	            0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
-	            0xF0, 0x80, 0xF0, 0x80, 0x80,  // F
+	            0xF0, 0x80, 0xF0, 0x80, 0x80, // F
 	            0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 	            0x20, 0x60, 0x20, 0x20, 0x70, // 1
 	            0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -79,7 +79,7 @@ public class Program {
 		int address = MEMORY_OFFSET;
 		
 		for(int i = 0 ; i < mem.length ; i++) {
-			 memory.write(mem[i],address);
+			 memory.write(address, mem[i]);
              address++;
 		}
 		memory.printFullMemory();

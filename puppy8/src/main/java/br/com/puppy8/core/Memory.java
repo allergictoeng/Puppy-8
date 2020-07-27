@@ -15,10 +15,10 @@ public class Memory {
 	}
 
 	public int read(int adress) {
-		return memory[adress];
+		return (memory[adress] & 0xFF);
 	}
 
-	public void write(int data, int adress) {
+	public void write(int adress, int data) {
 			memory[adress] = (data & 0xFF);
 	}
 	

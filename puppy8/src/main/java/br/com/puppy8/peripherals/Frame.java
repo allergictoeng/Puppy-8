@@ -21,15 +21,9 @@ public class Frame extends JFrame {
 		this.panel = panel;
 
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		pack();
-
-		int width = WIDTH + getInsets().right + getInsets().left;
-		int height = HEIGHT + getInsets().top + getInsets().bottom;
-		setPreferredSize(new Dimension(width, height));
-		
+				
 		setLayout(new BorderLayout());
-		
-		 
+				 
 		pack();
 		
 		setTitle("Puppy-8");

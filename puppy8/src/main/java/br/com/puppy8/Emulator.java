@@ -1,7 +1,5 @@
 package br.com.puppy8;
 
-import java.util.Arrays;
-
 import br.com.puppy8.core.CPU;
 import br.com.puppy8.core.Memory;
 import br.com.puppy8.peripherals.Frame;

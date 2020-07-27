@@ -73,11 +73,11 @@ public class CPU {
 	}
 
 	public int readInRegister(int registerV) {
-		return registers[registerV];
+		return (registers[registerV] & 0xFF);
 	}
 
 	public void writeInRegister(int registerV, int data) {
-		registers[registerV] = data;
+		registers[registerV] = (data & 0xFF);
 	}
 
 	public void printRegisters() {
@@ -587,32 +587,36 @@ public class CPU {
 	}
 
 	private void drawsASprite() {
+		
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int nibble = (this.opcode & 0x000F);
+		
 		writeInRegister(0xF, 0x0);
 
 		for(int rowY = 0 ; rowY < nibble; rowY++) {
+			
 			int line = this.memory.read(this.index + rowY);
-
+			int resultY = registerYPosition + rowY;
+			resultY = resultY % 32;
+			
 			for(int colX = 0; colX < 8; colX++) {
 				int pixel = line & (0x80 >> colX);
+				int resultX = registerXPosition + colX;
+				resultX = resultX % 64;
 
 				if(pixel != 0) {
-					int resultX = registerXPosition + colX; 
-					int resultY = registerYPosition + rowY;
-
-					resultX = resultX % 64;
-					resultY = resultY % 32;
-
-					int indexLocal = resultY * 64 + resultX;
+			
+					int indexLocal = resultX + resultY * 64;
 					int pixelValue = this.peripherals.readPixelValue(indexLocal);
-
+										
 					if(pixelValue == 1) {
 						writeInRegister(0xF, 0x1);
 					}
-
-					this.peripherals.writePixelValue(indexLocal, pixelValue ^ 1);					
+					
+					int teste = pixelValue ^= 1;
+					
+					this.peripherals.writePixelValue(indexLocal, teste);					
 				}
 
 			}
