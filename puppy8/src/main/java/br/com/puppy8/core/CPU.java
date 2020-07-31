@@ -281,14 +281,14 @@ public class CPU {
 		int registerPosition = (this.opcode & 0x0F00) >>  8;
 		int registerData = (this.opcode & 0x00FF);
 		int registerResult = readInRegister(registerPosition);
-		this.programCounter += (registerResult == registerData)? 4 : 2; // Increment by 2 or 4
+		this.programCounter += (registerResult == registerData)? 4 : 2; 
 	}
 
 	private void skipsNextInstrIfVXDoesnEqualNN() {
 		int registerPosition = (this.opcode & 0x0F00) >>  8;
 		int registerData = (this.opcode & 0x00FF);
 		int registerResult = readInRegister(registerPosition);
-		this.programCounter += (registerResult != registerData)? 4 : 2; // Increment by 2 or 4
+		this.programCounter += (registerResult != registerData)? 4 : 2; 
 	}
 
 	private void skipsNextInstrIfVXEqualsVY() {
@@ -296,7 +296,7 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
-		this.programCounter += (registerXResult == registerYResult)? 4 : 2; // Increment by 2 or 4	
+		this.programCounter += (registerXResult == registerYResult)? 4 : 2;	
 	}
 
 	private void setsVXToNN() {
@@ -326,6 +326,7 @@ public class CPU {
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
+		
 		int result = (registerXResult |= registerYResult);
 
 		result &= 0xFF;
@@ -383,12 +384,13 @@ public class CPU {
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
 
-		int result = (registerXResult - registerYResult);
 
 		if(registerXResult > registerYResult)
 			writeInRegister(0xF, 1);
 		else
 			writeInRegister(0xF, 0);
+
+		int result = (registerXResult - registerYResult);
 
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);		
@@ -410,20 +412,20 @@ public class CPU {
 		writeInRegister(registerXPosition, result);
 		this.programCounter += 2; 		
 	}
-
+	
 	private void setsVXToVYMinusVX() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
 
-		int result = (registerYResult - registerXResult);
-
 		if(registerYResult > registerXResult)
 			writeInRegister(0xF, 1);
 		else
 			writeInRegister(0xF, 0);
 
+		int result = (registerYResult - registerXResult);
+		
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
 		this.programCounter += 2; 
@@ -537,7 +539,7 @@ public class CPU {
 	}
 
 	private void keyPressIsAwaitedAndThenStoredInVX(){
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		int registerPosition = (this.opcode & 0x0F00);
 		int currentKey = this.peripherals.getKeyPressed();
 
 		while(currentKey == 0) {
@@ -570,7 +572,7 @@ public class CPU {
 
 	private void addsVXToI() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		this.index = readInRegister(registerPosition);
+		this.index += readInRegister(registerPosition);
 
 		this.programCounter += 2;
 	}
@@ -612,7 +614,7 @@ public class CPU {
 		int amountOfRegisters = (this.opcode & 0x0F00) >> 8;
 
 		for(int i = 0 ;i <= amountOfRegisters; i++) {
-			memory.read(this.index + i);
+			writeInRegister(i, memory.read(this.index + i));			
 		}
 
 		this.index = (this.index + amountOfRegisters + 1);
