@@ -47,9 +47,9 @@ public class CPU {
 	private static final int OP_FX33 = 0x0033;
 	private static final int OP_FX55 = 0x0055;
 	private static final int OP_FX65 = 0x0065;
-	
+
 	private static final int REGISTERS_8BIT_SIZE16 = 0x10;
-	
+
 	private static final long MS_DELAY_INTERVAL = 17;
 
 	private Peripherals peripherals;
@@ -116,21 +116,21 @@ public class CPU {
 		this.nextTimer = 0;
 		timers();
 	}
-	
-	
+
+
 	public void fetchDecodeExecuteCycle() {
 		int adress = this.programCounter;
 		int instruction = ((memory.read(adress) << 8) | memory.read(adress + 1));
-		
+
 		long time = System.currentTimeMillis();
-		
+
 		if(time > this.nextTimer ) {
 			timers();
 			this.nextTimer = time + (1000/60);
 		}
 		decode(instruction);		
 	}
-	
+
 	private void timers() {
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -155,7 +155,7 @@ public class CPU {
 			this.peripherals.stopSound();
 		}
 	}
-	
+
 	public void decode(int opcode) {
 
 		this.opcode = opcode;
@@ -256,161 +256,143 @@ public class CPU {
 
 			} break;
 		}
-	  }
+		}
 	}
-	
+
 	private void clearScreen() {
 		this.peripherals.clearScreen();
 		this.programCounter += 2;
 	}
-	
+
 	private void returnFromASubroutine() {
 		this.programCounter = (this.stack.pop() + 2);
 	}
-		
+
 	private void jumpToAdress() {
 		this.programCounter = this.opcode & 0x0FFF;
 	}
-	
+
 	private void callsSubroutineAt() {
 		this.stack.push(this.programCounter);
 		this.programCounter = this.opcode & 0x0FFF;
 	}
-	// -- organize functions	
-	
-	private void fillsV0ToVXWithValuesFromMemoryStartingAtAddressI() {
-		int amountOfRegisters = (this.opcode & 0x0F00) >> 8;
 
-		for(int i = 0 ;i <= amountOfRegisters; i++) {
-			memory.read(this.index + i);
-		}
-
-		this.index = (this.index + amountOfRegisters + 1);
-
-		programCounter += 2;
-	}
-
-	private void storesV0ToVXInMemoryStartingAtAddressI() {
-		int amountOfRegisters = (this.opcode & 0x0F00) >> 8;
-
-		for(int i = 0 ;i <= amountOfRegisters; i++) {
-			memory.write(this.index + i, readInRegister(i));
-		}
-
-		programCounter += 2;
-	}
-
-
-	private void storesTheBinaryCodedDecimalRepresentationOfVX() {
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		int registerValue = readInRegister(registerPosition);
-
-		int hundreds = (registerValue - (registerValue % 100)) / 100;
-		registerValue -= hundreds * 100;
-		int tens = (registerValue - (registerValue % 10))/ 10;
-		registerValue -= tens * 10; 
-
-		memory.write(this.index, hundreds);
-		memory.write(this.index + 1, tens);
-		memory.write(this.index + 2, registerValue);
-
-		programCounter += 2;
-	}
-
-	private void setsIToTheLocationOfTheSpriteForTheCharacterInVX() {
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		this.index = (0x050 + readInRegister(registerPosition) * 5);
-
-		this.programCounter += 2;
-	}
-
-	private void addsVXToI() {
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		this.index = readInRegister(registerPosition);
-
-		this.programCounter += 2;
-	}
-
-	private void setsTheSoundTimerToVX() {
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		this.soundTimers = readInRegister(registerPosition);
-
-		this.programCounter += 2;
-	}
-
-	private void setsTheDelayTimerToVX() {
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		this.delay = readInRegister(registerPosition);
-
-		this.programCounter += 2;
-	}
-
-	private void keyPressIsAwaitedAndThenStoredInVX(){
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		int currentKey = this.peripherals.getKeyPressed();
-		
-		while(currentKey == 0) {
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			currentKey = this.peripherals.getKeyPressed();
-		}
-		
-		writeInRegister(registerPosition, currentKey);
-		this.programCounter += 2;
-		
-	}
-
-	private void setsVXToTheValueOfTheDelayTimer() {
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
-
-		writeInRegister(registerPosition, this.delay);
-		this.programCounter += 2;
-	}
-
-	private void setsVXResultOfABitwiseAndOperationOnARandomNumber() {
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
+	private void skipsNextInstrIfVXEqualsNN() {
+		int registerPosition = (this.opcode & 0x0F00) >>  8;
 		int registerData = (this.opcode & 0x00FF);
-
-		int result = (registerData & new Random().nextInt(0x100));
-
-		writeInRegister(registerPosition, result);
-		this.programCounter += 2;
+		int registerResult = readInRegister(registerPosition);
+		this.programCounter += (registerResult == registerData)? 4 : 2; // Increment by 2 or 4
 	}
 
-	private void jumpsAddressNNNPlusV0() {
-		this.programCounter = this.index + (this.opcode & 0x0FFF);		
+	private void skipsNextInstrIfVXDoesnEqualNN() {
+		int registerPosition = (this.opcode & 0x0F00) >>  8;
+		int registerData = (this.opcode & 0x00FF);
+		int registerResult = readInRegister(registerPosition);
+		this.programCounter += (registerResult != registerData)? 4 : 2; // Increment by 2 or 4
 	}
 
-	private void setsItoAddressNNN() {
-		this.index = (this.opcode & 0x0FFF);
-		this.programCounter += 2;
-	}
-
-	private void skipsNextInstructionIfVXdoesnEqualVY() {
+	private void skipsNextInstrIfVXEqualsVY() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
 		int registerYResult = readInRegister(registerYPosition);
-		this.programCounter += (registerXResult != registerYResult)? 4 : 2;	
+		this.programCounter += (registerXResult == registerYResult)? 4 : 2; // Increment by 2 or 4	
 	}
 
-	private void shiftsVXtoTheLeftBy1() {
+	private void setsVXToNN() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		int registerData = (this.opcode & 0x00FF);
+		writeInRegister(registerPosition, registerData);
+		this.programCounter += 2; 
+	}
+
+	private void addsNNToVX() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		int registerData = (this.opcode & 0x00FF);
+		int result = (readInRegister(registerPosition) + registerData) & 0xFF;
+		writeInRegister(registerPosition, result);
+		this.programCounter += 2; 
+	}
+
+	private void setsVXToTheValueOfVY() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		writeInRegister(registerXPosition, readInRegister(registerYPosition));
+		this.programCounter += 2; 
+	}
+
+	private void bitwiseOR() {
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+		int result = (registerXResult |= registerYResult);
 
-		int result = (registerXResult << 1);
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);
+		this.programCounter += 2;
+	}
 
-		if((registerXResult & 0x000F) == 1)
+	private void bitwiseAND() {
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+
+		int result = (registerXResult &= registerYResult);
+
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);
+		this.programCounter += 2; 
+	}
+
+	private void bitwiseXOR() {
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+
+		int result = (registerXResult ^= registerYResult);
+
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);
+		this.programCounter += 2; 
+	}
+
+	private void addsVYToVX() {
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+
+		int result = (registerXResult + registerYResult);
+
+		if(result > 0xF)
 			writeInRegister(0xF, 1);
 		else
 			writeInRegister(0xF, 0);
 
 		result &= 0xFF;
-		writeInRegister(registerXPosition, result);
+		writeInRegister(registerXPosition, result);		
 		this.programCounter += 2;
+	}
+
+	private void subtracVYFromVX() {
+		int registerXPosition = (this.opcode & 0x0F00) >> 8;
+		int registerYPosition = (this.opcode & 0x00F0) >> 4;
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+
+		int result = (registerXResult - registerYResult);
+
+		if(registerXResult > registerYResult)
+			writeInRegister(0xF, 1);
+		else
+			writeInRegister(0xF, 0);
+
+		result &= 0xFF;
+		writeInRegister(registerXPosition, result);		
+		this.programCounter += 2; 
 	}
 
 	private void shiftsVXToTheRightBy1() {
@@ -447,147 +429,51 @@ public class CPU {
 		this.programCounter += 2; 
 	}
 
-	private void subtracVYFromVX() {
+	private void shiftsVXtoTheLeftBy1() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
-		int registerYPosition = (this.opcode & 0x00F0) >> 4;
 		int registerXResult = readInRegister(registerXPosition);
-		int registerYResult = readInRegister(registerYPosition);
 
-		int result = (registerXResult - registerYResult);
+		int result = (registerXResult << 1);
 
-		if(registerXResult > registerYResult)
+		if((registerXResult & 0x000F) == 1)
 			writeInRegister(0xF, 1);
 		else
 			writeInRegister(0xF, 0);
-
-		result &= 0xFF;
-		writeInRegister(registerXPosition, result);		
-		this.programCounter += 2; 
-	}
-
-	private void addsVYToVX() {
-		int registerXPosition = (this.opcode & 0x0F00) >> 8;
-		int registerYPosition = (this.opcode & 0x00F0) >> 4;
-		int registerXResult = readInRegister(registerXPosition);
-		int registerYResult = readInRegister(registerYPosition);
-
-		int result = (registerXResult + registerYResult);
-
-		if(result > 0xF)
-			writeInRegister(0xF, 1);
-		else
-			writeInRegister(0xF, 0);
-
-		result &= 0xFF;
-		writeInRegister(registerXPosition, result);		
-		this.programCounter += 2;
-	}
-
-	private void bitwiseXOR() {
-		int registerXPosition = (this.opcode & 0x0F00) >> 8;
-		int registerYPosition = (this.opcode & 0x00F0) >> 4;
-		int registerXResult = readInRegister(registerXPosition);
-		int registerYResult = readInRegister(registerYPosition);
-
-		int result = (registerXResult ^= registerYResult);
-
-		result &= 0xFF;
-		writeInRegister(registerXPosition, result);
-		this.programCounter += 2; 
-	}
-
-	private void bitwiseAND() {
-		int registerXPosition = (this.opcode & 0x0F00) >> 8;
-		int registerYPosition = (this.opcode & 0x00F0) >> 4;
-		int registerXResult = readInRegister(registerXPosition);
-		int registerYResult = readInRegister(registerYPosition);
-
-		int result = (registerXResult &= registerYResult);
-
-		result &= 0xFF;
-		writeInRegister(registerXPosition, result);
-		this.programCounter += 2; 
-	}
-
-	private void bitwiseOR() {
-		int registerXPosition = (this.opcode & 0x0F00) >> 8;
-		int registerYPosition = (this.opcode & 0x00F0) >> 4;
-		int registerXResult = readInRegister(registerXPosition);
-		int registerYResult = readInRegister(registerYPosition);
-		int result = (registerXResult |= registerYResult);
 
 		result &= 0xFF;
 		writeInRegister(registerXPosition, result);
 		this.programCounter += 2;
 	}
 
-	private void setsVXToTheValueOfVY() {
+	private void skipsNextInstructionIfVXdoesnEqualVY() {
 		int registerXPosition = (this.opcode & 0x0F00) >> 8;
 		int registerYPosition = (this.opcode & 0x00F0) >> 4;
-		writeInRegister(registerXPosition, readInRegister(registerYPosition));
-		this.programCounter += 2; 
+		int registerXResult = readInRegister(registerXPosition);
+		int registerYResult = readInRegister(registerYPosition);
+		this.programCounter += (registerXResult != registerYResult)? 4 : 2;	
 	}
 
-	private void addsNNToVX() {
+	private void setsItoAddressNNN() {
+		this.index = (this.opcode & 0x0FFF);
+		this.programCounter += 2;
+	}
+
+	private void jumpsAddressNNNPlusV0() {
+		this.programCounter = this.index + (this.opcode & 0x0FFF);		
+	}
+
+	private void setsVXResultOfABitwiseAndOperationOnARandomNumber() {
 		int registerPosition = (this.opcode & 0x0F00) >> 8;
 		int registerData = (this.opcode & 0x00FF);
-		int result = (readInRegister(registerPosition) + registerData) & 0xFF;
+
+		int result = (registerData & new Random().nextInt(0x100));
+
 		writeInRegister(registerPosition, result);
-		this.programCounter += 2; 
-	}
-
-	private void setsVXToNN() {
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		int registerData = (this.opcode & 0x00FF);
-		writeInRegister(registerPosition, registerData);
-		this.programCounter += 2; 
-	}
-
-	private void skipsNextInstrIfVXEqualsVY() {
-		int registerXPosition = (this.opcode & 0x0F00) >> 8;
-		int registerYPosition = (this.opcode & 0x00F0) >> 4;
-		int registerXResult = readInRegister(registerXPosition);
-		int registerYResult = readInRegister(registerYPosition);
-		this.programCounter += (registerXResult == registerYResult)? 4 : 2; // Increment by 2 or 4	
-	}
-
-	private void skipsNextInstrIfVXDoesnEqualNN() {
-		int registerPosition = (this.opcode & 0x0F00) >>  8;
-		int registerData = (this.opcode & 0x00FF);
-		int registerResult = readInRegister(registerPosition);
-		this.programCounter += (registerResult != registerData)? 4 : 2; // Increment by 2 or 4
-	}
-
-	private void skipsNextInstrIfVXEqualsNN() {
-		int registerPosition = (this.opcode & 0x0F00) >>  8;
-		int registerData = (this.opcode & 0x00FF);
-		int registerResult = readInRegister(registerPosition);
-		this.programCounter += (registerResult == registerData)? 4 : 2; // Increment by 2 or 4
-	}
-	
-
-	private void skipsTheNextInstructionIfTheKeyStoredInVXisNPressed() {
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		
-		if(this.peripherals.getKeyPressed() != readInRegister(registerPosition)) 
-			this.programCounter += 4; 
-		else
-			this.programCounter += 2;
-		
-	}
-
-	private void skipsTheNextInstructionIfTheKeyStoredInVXIsPressed() {
-		int registerPosition = (this.opcode & 0x0F00) >> 8;
-		
-		if(this.peripherals.getKeyPressed() == readInRegister(registerPosition)) 
-			this.programCounter += 4; 
-		else
-			this.programCounter += 2;
-
+		this.programCounter += 2;
 	}
 
 	private void drawsASprite() {
-		
+
 		int registerXPosition = readInRegister((this.opcode & 0x0F00) >> 8);
 		int registerYPosition = readInRegister((this.opcode & 0x00F0) >> 4);
 		int nibble = (this.opcode & 0x000F);
@@ -620,7 +506,117 @@ public class CPU {
 		}
 
 		this.programCounter += 2;
-		this.peripherals.repaintScreen();
-		//System.out.println("DRW "+registerXPosition+", "+registerYPosition+", "+nibble);
+		this.peripherals.repaintScreen();		
+	}
+
+	private void skipsTheNextInstructionIfTheKeyStoredInVXIsPressed() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+
+		if(this.peripherals.getKeyPressed() == readInRegister(registerPosition)) 
+			this.programCounter += 4; 
+		else
+			this.programCounter += 2;
+
+	}
+
+	private void skipsTheNextInstructionIfTheKeyStoredInVXisNPressed() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+
+		if(this.peripherals.getKeyPressed() != readInRegister(registerPosition)) 
+			this.programCounter += 4; 
+		else
+			this.programCounter += 2;
+
+	}
+
+	private void setsVXToTheValueOfTheDelayTimer() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+
+		writeInRegister(registerPosition, this.delay);
+		this.programCounter += 2;
+	}
+
+	private void keyPressIsAwaitedAndThenStoredInVX(){
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		int currentKey = this.peripherals.getKeyPressed();
+
+		while(currentKey == 0) {
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			currentKey = this.peripherals.getKeyPressed();
+		}
+
+		writeInRegister(registerPosition, currentKey);
+		this.programCounter += 2;
+
+	}
+
+	private void setsTheDelayTimerToVX() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		this.delay = readInRegister(registerPosition);
+
+		this.programCounter += 2;
+	}
+
+	private void setsTheSoundTimerToVX() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		this.soundTimers = readInRegister(registerPosition);
+
+		this.programCounter += 2;
+	}
+
+	private void addsVXToI() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		this.index = readInRegister(registerPosition);
+
+		this.programCounter += 2;
+	}
+
+	private void setsIToTheLocationOfTheSpriteForTheCharacterInVX() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		this.index = (0x050 + readInRegister(registerPosition) * 5);
+
+		this.programCounter += 2;
+	}
+
+	private void storesTheBinaryCodedDecimalRepresentationOfVX() {
+		int registerPosition = (this.opcode & 0x0F00) >> 8;
+		int registerValue = readInRegister(registerPosition);
+
+		int hundreds = (registerValue - (registerValue % 100)) / 100;
+		registerValue -= hundreds * 100;
+		int tens = (registerValue - (registerValue % 10))/ 10;
+		registerValue -= tens * 10; 
+
+		memory.write(this.index, hundreds);
+		memory.write(this.index + 1, tens);
+		memory.write(this.index + 2, registerValue);
+
+		this.programCounter += 2;
+	}
+
+	private void storesV0ToVXInMemoryStartingAtAddressI() {
+		int amountOfRegisters = (this.opcode & 0x0F00) >> 8;
+
+		for(int i = 0 ;i <= amountOfRegisters; i++) {
+			memory.write(this.index + i, readInRegister(i));
+		}
+
+		this.programCounter += 2;
+	}
+
+	private void fillsV0ToVXWithValuesFromMemoryStartingAtAddressI() {
+		int amountOfRegisters = (this.opcode & 0x0F00) >> 8;
+
+		for(int i = 0 ;i <= amountOfRegisters; i++) {
+			memory.read(this.index + i);
+		}
+
+		this.index = (this.index + amountOfRegisters + 1);
+
+		this.programCounter += 2;
 	}
 }

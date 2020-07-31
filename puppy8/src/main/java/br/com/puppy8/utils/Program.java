@@ -37,7 +37,7 @@ public class Program {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        memory.printFullMemory();
+        
     }
 	
 	public void loadTest() {
@@ -82,8 +82,6 @@ public class Program {
 			 memory.write(address, mem[i]);
              address++;
 		}
-		memory.printFullMemory();
-		
 	}
 
 }
