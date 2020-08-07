@@ -12,7 +12,7 @@ public class EmulatorController {
 		if(emulatorController == null) {
 			emulatorController = new EmulatorController();
 			Frame frame = new Frame(emulatorController);
-			frame.setup(null);
+			frame.setup(null,null);
 			frame.setVisible(true);
 			frame.runner();
 		}

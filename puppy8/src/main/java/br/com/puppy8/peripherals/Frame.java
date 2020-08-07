@@ -2,6 +2,7 @@ package br.com.puppy8.peripherals;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
@@ -12,13 +13,15 @@ public class Frame extends JFrame {
 	private static final int HEIGHT = 340;
 	private Panel panel;
 	private EmulatorController emulatorController;
+	private KeyListener hexadecimaKeypad;
 
 	public Frame(EmulatorController emulatorController) {
 		this.emulatorController = emulatorController;
 	}
 
-	public void setup(Panel panel) {
+	public void setup(Panel panel, KeyListener hexadecimaKeypad) {
 		this.panel = panel;
+		this.hexadecimaKeypad = hexadecimaKeypad;
 
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 				
@@ -32,8 +35,9 @@ public class Frame extends JFrame {
 		setFocusable(true);
 		
 		
-		if(this.panel != null) {
+		if(this.panel != null && this.hexadecimaKeypad != null) {
 			add(this.panel);
+			addKeyListener(this.hexadecimaKeypad);
 		}
 		
 	}

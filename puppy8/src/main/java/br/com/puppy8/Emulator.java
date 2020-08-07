@@ -33,10 +33,10 @@ public class Emulator extends Thread implements Peripherals{
 		screen = new Screen(Screen.SCREEN_SIZE);
 		
 		
-		panel = new Panel(screen.getScreen());
-		this.frame.setup(panel);
-
 		hexadecimaKeypad = new HexadecimaKeypad();
+		panel = new Panel(screen.getScreen());
+		this.frame.setup(panel,hexadecimaKeypad);
+
 		sound = new Sound();
 
 		cpu = new CPU(memory, this);
@@ -47,7 +47,7 @@ public class Emulator extends Thread implements Peripherals{
 
 		// in progress!!!!
 		program = new Program(memory);
-		program.loadProgram("roms//testop.ch8");
+		program.loadProgram("roms//ufo.ch8");
 		//program.loadTest();
 		
 	}
@@ -59,7 +59,7 @@ public class Emulator extends Thread implements Peripherals{
 			try {
 				cpu.fetchDecodeExecuteCycle();				
 				try {
-					sleep(1);
+					sleep(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					System.exit(0);

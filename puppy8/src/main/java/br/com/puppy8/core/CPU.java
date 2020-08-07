@@ -545,10 +545,10 @@ public class CPU {
 		while(currentKey == 0) {
 			try {
 				Thread.sleep(300);
+				currentKey = this.peripherals.getKeyPressed();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			currentKey = this.peripherals.getKeyPressed();
 		}
 
 		writeInRegister(registerPosition, currentKey);

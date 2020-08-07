@@ -23,7 +23,7 @@ public class HexadecimaKeypad extends KeyAdapter {
 			KeyEvent.VK_V, // F
 	};
 
-	private int pressed = 0x0;
+	private int pressed;
 	
 	public HexadecimaKeypad() {
 		this.pressed = 0x0;
@@ -40,7 +40,9 @@ public class HexadecimaKeypad extends KeyAdapter {
 	}
 	
 	public int getKeyPressed() {
-		return this.pressed;
+		int test = this.pressed; 
+		System.out.println(test);
+		return test;
 	}
 	
 	private int key(int key) {
