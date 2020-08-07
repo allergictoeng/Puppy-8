@@ -40,9 +40,7 @@ public class HexadecimaKeypad extends KeyAdapter {
 	}
 	
 	public int getKeyPressed() {
-		int test = this.pressed; 
-		System.out.println(test);
-		return test;
+		return this.pressed;
 	}
 	
 	private int key(int key) {

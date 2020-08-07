@@ -12,14 +12,9 @@ public class Sound {
 
     public Sound() {
         try {
-        	MidiDevice.Info[] devices = MidiSystem.getMidiDeviceInfo();
-        	if(devices.length == 0)
-        		System.out.println("Not Found!!");
-        	else {	
-            synthesizer = MidiSystem.getSynthesizer();
+        	synthesizer = MidiSystem.getSynthesizer();
             synthesizer.open();
-            midiChannel = synthesizer.getChannels()[0];
-        	}
+            midiChannel = synthesizer.getChannels()[0];        	
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         }

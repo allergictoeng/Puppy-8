@@ -59,7 +59,7 @@ public class Emulator extends Thread implements Peripherals{
 			try {
 				cpu.fetchDecodeExecuteCycle();				
 				try {
-					sleep(10);
+					sleep(2);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					System.exit(0);
