@@ -2,7 +2,7 @@ package br.com.puppy8.utils;
 
 import br.com.puppy8.core.Memory;
 
-public class TemporaryFontProgram {
+public class FontSet {
 	 private static final int MEMORY_OFFSET = 0x50;
 	    private static final int[] FONTSET = {
 	            0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -26,11 +26,11 @@ public class TemporaryFontProgram {
 	    private Memory memory;
 
 
-	    public TemporaryFontProgram(Memory memory) {
+	    public FontSet(Memory memory) {
 	        this.memory = memory;
 	    }
 
-	    public void loadFont(){
+	    public void loadFontSet(){
 	        for (int i = 0; i < FONTSET.length; i++) {
 	            int address = MEMORY_OFFSET + i;
 	            int value = FONTSET[i];
