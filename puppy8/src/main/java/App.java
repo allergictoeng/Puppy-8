@@ -1,5 +1,4 @@
-package br.com.puppy8;
-
+import br.com.puppy8.EmulatorController;
 import br.com.puppy8.utils.Program;
 
 public class App{
