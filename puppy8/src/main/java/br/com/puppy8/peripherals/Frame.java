@@ -7,8 +7,8 @@ import javax.swing.JFrame;
 import br.com.puppy8.EmulatorController;
 
 public class Frame extends JFrame {
-	private static final int WIDTH = 640;
-	private static final int HEIGHT = 340;
+	private static final int WIDTH = 645;
+	private static final int HEIGHT = 350;
 	private static final String NAME = "Puppy-8";
 	private Panel panel;
 	private EmulatorController emulatorController;

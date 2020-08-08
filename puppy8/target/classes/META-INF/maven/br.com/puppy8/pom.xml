@@ -7,7 +7,7 @@
 
 	<groupId>br.com</groupId>
 	<artifactId>puppy8</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 
 	<name>puppy8</name>
 	<url>https://github.com/allergictoeng/Puppy-8</url>
@@ -31,19 +31,20 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jar-plugin</artifactId>
-						<version>2.4</version>
-						<configuration>
-							<archive>
-								<index>true</index>
-								<manifest>
-									<mainClass>com.br.puppy8.App</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-					</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<archive>
+							<index>true</index>
+							<manifest>
+								<addClasspath>true</addClasspath>
+								<mainClass>App</mainClass>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Built-By: allergictoeng
 Build-Jdk: 11.0.8
-Main-Class: com.br.puppy8.App
+Main-Class: App
 Created-By: Maven Integration for Eclipse
 

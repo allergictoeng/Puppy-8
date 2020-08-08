@@ -19,9 +19,12 @@ public class Program {
 				fileInputStream = new FileInputStream(file);
 				Program.inputStream = new DataInputStream(fileInputStream);
 			} catch (FileNotFoundException e) {
-				System.err.println("Argument" + args[0] + " must be an .ch8 file");
+				System.err.println("Wrong Argument! it must be: \"java -jar <puppy8>.jar <rom-name>.ch8\"");
 				System.exit(1);
 			}
+		}else {
+			System.err.println("Argument format: \"java -jar <puppy8>.jar <rom-name>.ch8\"");
+			System.exit(1);
 		}
 	}
 

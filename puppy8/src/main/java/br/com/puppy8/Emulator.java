@@ -44,22 +44,22 @@ public class Emulator extends Thread implements Peripherals{
 	@Override
 	public void run() {
 		this.running = true;
-		while(running) {
-			try {
-				cpu.fetchDecodeExecuteCycle();				
-				try {
-					sleep(2);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					System.exit(0);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(0);
+		try {
+			while(running) {
+				cpu.fetchDecodeExecuteCycle();
+				sleep(2);
 			}
+		} catch (InterruptedException e) {
+			stopEmulation();
+			e.printStackTrace();
+			System.exit(1);
+		} catch (Exception e) {
+			stopEmulation();
+			e.printStackTrace();
+			System.exit(1);
 		}
 	}
-	
+
 	public void stopEmulation() {
 		this.running = false;
 		clearScreen();
