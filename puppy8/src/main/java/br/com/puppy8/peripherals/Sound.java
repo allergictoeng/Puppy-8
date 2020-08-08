@@ -1,7 +1,6 @@
 package br.com.puppy8.peripherals;
 
 import javax.sound.midi.MidiChannel;
-import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;

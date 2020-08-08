@@ -3,7 +3,6 @@ package br.com.puppy8.core;
 import java.util.Arrays;
 
 public class Stack {
-	
 	static final int STACK_SIZE16 = 0x10;
 	private int stackSize;
 	private int[] stack;

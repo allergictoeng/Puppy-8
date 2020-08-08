@@ -8,11 +8,8 @@ import java.awt.Image;
 import javax.swing.JPanel;
 
 public class Panel extends JPanel {
-
     private static final int PIXEL_SIZE = 10;
-
     private byte[] screen;
-
 
     public Panel(byte[] screen) {
         super(true);
@@ -44,5 +41,4 @@ public class Panel extends JPanel {
 
         graphics.drawImage(offScreenImage, 0, 0, this);
     }
-
 }

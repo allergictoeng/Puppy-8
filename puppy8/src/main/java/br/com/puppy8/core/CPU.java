@@ -475,7 +475,6 @@ public class CPU {
 	}
 
 	private void drawsASprite() {
-
 		int registerXPosition = readInRegister((this.opcode & 0x0F00) >> 8);
 		int registerYPosition = readInRegister((this.opcode & 0x00F0) >> 4);
 		int nibble = (this.opcode & 0x000F);
@@ -492,21 +491,17 @@ public class CPU {
 				resultX = resultX % 64;
 
 				if(pixel != 0) {
-
 					int indexLocal = resultX + resultY * 64;
 					int pixelValue = this.peripherals.readPixelValue(indexLocal);
 
 					if(pixelValue == 1) {
 						writeInRegister(0xF, 0x1);
 					}
-
 					this.peripherals.writePixelValue(indexLocal, pixelValue ^ 1);					
 				}
-
 			}
-
 		}
-
+		
 		this.programCounter += 2;
 		this.peripherals.repaintScreen();		
 	}
@@ -518,7 +513,6 @@ public class CPU {
 			this.programCounter += 4; 
 		else
 			this.programCounter += 2;
-
 	}
 
 	private void skipsTheNextInstructionIfTheKeyStoredInVXisNPressed() {
@@ -528,7 +522,6 @@ public class CPU {
 			this.programCounter += 4; 
 		else
 			this.programCounter += 2;
-
 	}
 
 	private void setsVXToTheValueOfTheDelayTimer() {
@@ -553,7 +546,6 @@ public class CPU {
 
 		writeInRegister(registerPosition, currentKey);
 		this.programCounter += 2;
-
 	}
 
 	private void setsTheDelayTimerToVX() {
@@ -618,7 +610,6 @@ public class CPU {
 		}
 
 		this.index = (this.index + amountOfRegisters + 1);
-
 		this.programCounter += 2;
 	}
 }

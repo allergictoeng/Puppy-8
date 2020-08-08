@@ -5,5 +5,4 @@ public class Arguments {
 	public Arguments(String[] args) {
 		
 	}
-
 }

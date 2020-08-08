@@ -1,9 +1,7 @@
 package br.com.puppy8.peripherals;
 
 public class Screen {
-
 	public static final int SCREEN_SIZE = 0x800;
-
 	private byte[] pixelData;
 
 	public Screen(int sSize) {
