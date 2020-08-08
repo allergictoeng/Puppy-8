@@ -1,6 +1,7 @@
 package br.com.puppy8;
 
 import br.com.puppy8.core.CPU;
+import br.com.puppy8.core.FontSet;
 import br.com.puppy8.core.Memory;
 import br.com.puppy8.peripherals.Frame;
 import br.com.puppy8.peripherals.HexadecimaKeypad;
@@ -8,8 +9,8 @@ import br.com.puppy8.peripherals.Panel;
 import br.com.puppy8.peripherals.Peripherals;
 import br.com.puppy8.peripherals.Screen;
 import br.com.puppy8.peripherals.Sound;
+import br.com.puppy8.utils.Loader;
 import br.com.puppy8.utils.Program;
-import br.com.puppy8.utils.FontSet;
 
 public class Emulator extends Thread implements Peripherals{
 	
@@ -22,9 +23,8 @@ public class Emulator extends Thread implements Peripherals{
 	private Sound sound;
 	private Memory memory;
 	private FontSet fontSet;
-	private Program program;
 	
-	public Emulator(Frame frame) {
+	public Emulator(Frame frame, Program program) {
 		this.frame = frame;
 		this.memory = new Memory(Memory.SIZE_4096);
 
@@ -37,9 +37,8 @@ public class Emulator extends Thread implements Peripherals{
 		this.cpu = new CPU(memory, this);
 		this.fontSet = new FontSet(memory);
 		this.fontSet.loadFontSet();
-		// in progress!!!!
-		this.program = new Program(memory);
-		this.program.loadProgram("roms//ufo.ch8");		
+
+		new Loader(program, memory);
 	}
 		
 	@Override

@@ -1,6 +1,4 @@
-package br.com.puppy8.utils;
-
-import br.com.puppy8.core.Memory;
+package br.com.puppy8.core;
 
 public class FontSet {
 	private static final int MEMORY_OFFSET = 0x50;
