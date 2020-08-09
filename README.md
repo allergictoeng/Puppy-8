@@ -1,4 +1,4 @@
-# Puppy-8 ##[v.0.1.0] 
+# Puppy-8 ## [v.0.1.0] 
 +1 CHIP-8 Implementation
 
 ## Usage
