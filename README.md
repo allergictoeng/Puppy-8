@@ -1,5 +1,5 @@
-# Puppy-8 ## [v.0.1.0] 
-+1 CHIP-8 Implementation
+# Puppy-8
+ +1 CHIP-8 Implementation (ho lord)
 
 ## Usage
 Building with Maven:
@@ -19,11 +19,10 @@ Chip8 Key   Keyboard
  7 8 9 E     a s d f
  A 0 B F     z x c v
 ```
-Game roms:
+## Game roms
 https://johnearnest.github.io/chip8Archive/
 https://www.zophar.net/pdroms/chip8/chip-8-games-pack.html
 
-#Extras
-Source knoledge:
+## Extras
 https://github.com/rafzby/chip8-emulator/
 https://github.com/tobiasvl/awesome-chip-8
