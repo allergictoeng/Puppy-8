@@ -19,10 +19,11 @@ Chip8 Key   Keyboard
  7 8 9 E     a s d f
  A 0 B F     z x c v
 ```
-## Game roms
-https://johnearnest.github.io/chip8Archive/
+### Game roms (.ch8)
+https://johnearnest.github.io/chip8Archive/ </br>
 https://www.zophar.net/pdroms/chip8/chip-8-games-pack.html
 
-## Extras
-https://github.com/rafzby/chip8-emulator/
-https://github.com/tobiasvl/awesome-chip-8
+### Extras
+https://en.wikipedia.org/wiki/CHIP-8 </br>
+https://github.com/tobiasvl/awesome-chip-8 </br>
+https://github.com/rafzby/chip8-emulator/ 
