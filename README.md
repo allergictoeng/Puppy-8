@@ -1,15 +1,15 @@
 # Puppy-8
  +1 CHIP-8 Implementation (ho lord)
 
-## Usage
+## Getting started
 First, install java </br>
 https://java.com/en/download/help/download_options.xml
 
-After that, building with Maven:
+After that, build with Maven:
 ```
 mvn install
 ```
-
+## Usage
 Lastly, execute in command line:
 ```
 java -jar <puppy8-name>.jar <rom-name>.ch8
