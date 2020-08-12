@@ -2,14 +2,19 @@
  +1 CHIP-8 Implementation (ho lord)
 
 ## Usage
-Building with Maven:
+First, install java </br>
+https://java.com/en/download/help/download_options.xml
+
+After that, building with Maven:
 ```
 mvn install
 ```
-after this, execute in command line:
+
+Lastly, execute in command line:
 ```
 java -jar <puppy8-name>.jar <rom-name>.ch8
 ```
+
 Controls:
 ```
 Chip8 Key   Keyboard
