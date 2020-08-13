@@ -113,8 +113,7 @@ public class CPU {
 		this.index = 0;
 		this.delay = 0;
 		this.soundTimers = 0;
-		this.nextTimer = 0;
-		timers();
+		this.nextTimer = 0;		
 	}
 
 
@@ -125,30 +124,22 @@ public class CPU {
 		long time = System.currentTimeMillis();
 
 		if(time > this.nextTimer ) {
-			timers();
+			decrementTimers();
 			this.nextTimer = time + (1000/60);
 		}
 		decode(instruction);		
 	}
 
-	private void timers() {
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				decrementTimers();
-			}
-		}, MS_DELAY_INTERVAL, MS_DELAY_INTERVAL);
-	}
-
 	private void decrementTimers() {
-		if (delay != 0) {
+		if (delay > 0) {
 			delay--;
 		}
 
-		if (soundTimers != 0) {
+		if (soundTimers > 0) {
+			//if(soundTimers == 1) {
+				this.peripherals.playSound();
+			//}
 			soundTimers--;
-			this.peripherals.playSound();
 		}
 
 		if (soundTimers == 0) {
