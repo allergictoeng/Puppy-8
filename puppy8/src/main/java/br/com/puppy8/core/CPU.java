@@ -136,9 +136,7 @@ public class CPU {
 		}
 
 		if (soundTimers > 0) {
-			//if(soundTimers == 1) {
-				this.peripherals.playSound();
-			//}
+			this.peripherals.playSound();
 			soundTimers--;
 		}
 
