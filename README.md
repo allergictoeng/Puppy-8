@@ -28,7 +28,6 @@ Chip8 Key   Keyboard
  A 0 B F     z x c v
 ```
 ### App roms (.ch8)
-https://johnearnest.github.io/chip8Archive/ </br>
 https://github.com/dmatlack/chip8/tree/master/roms </br>
 https://www.zophar.net/pdroms/chip8/chip-8-games-pack.html
 
