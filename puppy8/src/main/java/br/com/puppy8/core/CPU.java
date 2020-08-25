@@ -50,8 +50,6 @@ public class CPU {
 
 	private static final int REGISTERS_8BIT_SIZE16 = 0x10;
 
-	private static final long MS_DELAY_INTERVAL = 17;
-
 	private Peripherals peripherals;
 	private Memory memory;
 	private Stack stack;
