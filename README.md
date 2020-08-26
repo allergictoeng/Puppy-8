@@ -37,3 +37,6 @@ https://www.zophar.net/pdroms/chip8/chip-8-games-pack.html
 https://en.wikipedia.org/wiki/CHIP-8 </br>
 https://github.com/tobiasvl/awesome-chip-8 </br>
 https://github.com/rafzby/chip8-emulator/ 
+
+### For coders
+This code is not optimized, the main reason is, its a study code.
